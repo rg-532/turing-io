@@ -1,2 +1,2 @@
 # turing-io
-An application for simulating turing machines
+An application for simulating turing machines (compiler branch)
