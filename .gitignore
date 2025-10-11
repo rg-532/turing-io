@@ -331,3 +331,6 @@ pyrightconfig.json
 # LibreOffice files
 *.~lock.*
 
+# Temporary ignore .idea
+.idea
+
