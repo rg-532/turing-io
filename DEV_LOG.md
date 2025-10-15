@@ -1,6 +1,6 @@
 # Development Log
 
-## Prelude
+## Prelude (October 10-12, 2025)
 Summary of what happened so far:
 - On Oct. 10th, I discussed with **ChatGPT5.0** about the features and structure of the project.
   - We've decided it would be best to build the compiler in `Python` for now (rather
@@ -23,14 +23,42 @@ Summary of what happened so far:
 
 
 ## October 13th, 2025
-### Decisions
+### General
 - Had some fun time with ``gtksourceview`` (Not really it was abysmal - not doing that again for a while).
-- Implemented the basic token recognition (The tough mechanisms are left for tomorrow).
 
-### Compiler/Lexer Problems
+### Compiler/Lexer
+- Implemented the basic token recognition (The tough mechanisms are left for tomorrow).
 - Decided to implement *indentation based scoping* (`if/else` statements, instead of pure-assembly style).
 - Need to decide on **post-processing** vs. **in-processing** approach for `INDENT`, `DEDENT` generation.
 - Also, need to figure out a way to avoid generating `INDENT` and `DEDENT` when near a `label` type token.
+
+
+## October 14th, 2025
+### Compiler/Lexer
+- Decided to use **in-processing** for indentation management in the lexer, since `PLY` returns
+  a generator instance which is iterated, hence making the process suitable for extension.
+- To handle **labels**, the Lexer can utilize a **lookahead** type approach - Before yielding
+  the custom `INDENT` or `DEDENT` tokens, they are cached in some **queue** which is dumped
+  when the decision is made.
+
+  This approach can also be used for empty lines w/ indentations inside them.
+- Implementation of the lexer is yet to be finished - I need to be more decisive in my implementation
+  methods so I can generate more code, rather than constantly worrying about design and what is
+  most correct.
+
+
+## October 15th, 2025
+### General
+- Learned about Python's **Exception Hierarchy** and custom exception definition (properly).
+- Learned about how **MRO** and `super()` are defined in python in cases of multiple inheritance.
+
+### Compiler/Lexer
+- Consider **exposing the Lexer's `indent_char` parameter** so it can be set by calling user.
+- Realized indentation support is complex - There could also be inconsistencies with indentation
+  levels and custom exceptions are needed - Did not finish implementation.
+- Added a bunch of TODOs, most of them for things that need to update when I add column tracking
+  for tokens.
+- I need to eventually refactor the `compiler/lexer.py` file.
 
 
 
