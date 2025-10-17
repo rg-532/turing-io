@@ -43,7 +43,7 @@ Summary of what happened so far:
 
   This approach can also be used for empty lines w/ indentations inside them.
 - Implementation of the lexer is yet to be finished - I need to be more decisive in my implementation
-  methods so I can generate more code, rather than constantly worrying about design and what is
+  methods, so I can generate more code, rather than constantly worrying about design and what is
   most correct.
 
 
@@ -60,5 +60,22 @@ Summary of what happened so far:
   for tokens.
 - I need to eventually refactor the `compiler/lexer.py` file.
 
+
+## October 16th, 2025
+### General
+- Read about design patterns for splitting the lexer class into a `PLY` specification and added
+  utilities versus a whitespace token manager (the main lexer).
+
+### Compiler/Lexer
+- Finished (to some extent) the lexer implementation.
+  - Separated the errors into a new file, and the class into two parts: The **PLY integration** in
+    `_PLY_Lexer_Facade` and the **indentation/whitespace management** in `TMLexer`. Packaged everything
+    into a package called `lexer`.
+  - Implemented **column tracking** (Count starts with 1).
+- Left to do:
+  - Add doc, `t_error`, and whitespace filtering to the main `TMLexer` class.<break>
+    Details can be found in a `TODO` on the class doc.
+  - Testing for the Lexer.
+  - Some added refactory. Mainly need to decide if the Facade should be private or not.
 
 

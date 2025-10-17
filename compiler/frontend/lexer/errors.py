@@ -1,0 +1,38 @@
+import re
+
+
+class MixedIndentationError(ValueError):
+    """A lexer error to raise when the scanned text uses a mixture of characters for indentation.
+
+    For example, the following code:
+    ::
+        1 some code                 # not indented
+        2     indented code         # indented with one tab (\\t) character
+        3     more indented code    # indented with four space characters
+    Should raise `MixedIndentationError` when line 3 is scanned.
+    """
+    def __init__(self, exp_char: str,  exp_line: int, inv_value: str, inv_line: int) -> None:
+        match = re.search(fr'[^{exp_char}]', inv_value)
+
+        assert match, "If error detected, match cannot be None."
+
+        message = (f"Indentation has both {repr(exp_char)} (line {exp_line}), and {repr(match.string)} "
+                   f"(line {inv_line}, column {match.start()}).")
+        super().__init__(message)
+
+
+class InconsistentIndentationError(ValueError):
+    """A lexer error to raise when the scanned text has a line with an indentation level which is less
+    than the preceding line but does not match any of the previous indentation levels.
+
+    For example, the following code:
+    ::
+        1 some code                 # not indented
+        2     indented code         # indented with four space characters
+        3   badly indented code     # indented with two space characters
+    Should raise `InconsistentIndentationError` when line 3 is scanned.
+    """
+    def __init__(self, exp_length: int, exp_line: int, got_length: int, got_line: int) -> None:
+        message = (f"Got indentation of {got_length} (line {got_line}), but closest previous level has "
+                   f"indentation of {exp_length} (line {exp_line}).")
+        super().__init__(message)
