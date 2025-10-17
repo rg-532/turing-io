@@ -1,22 +1,20 @@
-from typing import Optional, List, Tuple, Generator, Any
+from typing import Optional, List, Tuple, Generator
 
 from ply import lex
 
 from compiler.frontend.lexer.errors import MixedIndentationError, InconsistentIndentationError
 from compiler.frontend.lexer._ply_lexer import _PLYLexerFacade
 
-
 # noinspection PyPep8Naming
 class TMLexer:
-    """Lexical analyzer for ``TMLang``. Utilizes `PLY` library's lexer.
+    """Lexer for ``.tm`` files.
 
-    TODO:
-        - Fix doc.
-        - Add whitespace filter for when it is irrelevant potentially.
-        - Add support for illegal characters via ``t_error``.
+    Wraps a ``PLY`` Lexer, and transforms WS (whitespace) into INDENT/DEDENT tokens in the process.
+
+    Also responsible for raising errors when indentation is ambiguous (See `errors.py` for more details).
     """
     def __init__(self) -> None:
-        self._lexer_facade: _PLYLexerFacade = _PLYLexerFacade()
+        self._ply_lexer: _PLYLexerFacade = _PLYLexerFacade()
 
 
     def _init_indentation_context(self) -> None:
@@ -31,7 +29,7 @@ class TMLexer:
         self._indent_stack: List[Tuple[int, int]] = [(0, 0)]     # (0, 0) = Dummy value
 
 
-    def _ws_to_indent(self, tok: lex.LexToken) -> Generator[lex.LexToken, None, None]:
+    def _ws_to_indentation_tokens(self, tok: lex.LexToken) -> Generator[lex.LexToken, None, None]:
         """Receives a whitespace token (WS) which should be dumped, transformed into a single INDENT token or
         transformed into a sequence of DEDENT token, based on its length and previous indentations' lengths.
 
@@ -58,7 +56,7 @@ class TMLexer:
         if tok.value != self._indent_char * indent_length:
             raise MixedIndentationError(self._indent_char, self._indent_char_line, tok.value, tok.lineno)
 
-        # Determine if this is a DEDENT / INDENT / omission case
+        # Determine if this is a DEDENT / INDENT case
         if indent_length > self._indent_stack[-1][0]:
             self._indent_stack.append((indent_length, tok.lineno))
             yield self.copy_token(tok, "INDENT")
@@ -76,9 +74,14 @@ class TMLexer:
             self._indent_stack[-1] = (indent_length, tok.lineno)    # Override line value
 
 
-    def _final_indent_tokens(self) -> Generator[lex.LexToken, None, None]:
-        # TODO - doc this and clean up the token generation in `tokenize`.
-        lineno, colno = self._lexer_facade.get_current_position()
+    def _generate_final_indentation_tokens(self) -> Generator[lex.LexToken, None, None]:
+        """Generates final DEDENT tokens based on stack contents (If the stack has entries generated in the
+        tokenization process, it means that there are some INDENT tokens without matching DEDENT tokens, so
+        we generate these DEDENT tokens here).
+
+        :return: Iterator of DEDENT tokens, with their position set to the end of the file.
+        """
+        lineno, colno = self._ply_lexer.get_current_position()
 
         temp = lex.LexToken()
         temp.type = None
@@ -92,7 +95,8 @@ class TMLexer:
 
 
     @staticmethod
-    def copy_token(tok: lex.LexToken, new_type: Optional[str] = None) -> lex.LexToken:
+    def copy_token(tok: lex.LexToken, new_type: Optional[str] = None,
+    ) -> lex.LexToken:
         """Makes a copy of token `tok`, and updates its type to be `tok_type`. Does not copy inner attribute lexpos.
 
         :param tok:         Token to copy.
@@ -109,18 +113,26 @@ class TMLexer:
 
 
     def tokenize(self, text: str) -> Generator[lex.LexToken, None, None]:
-        self._init_indentation_context()
-        self._lexer_facade.input(text)
+        """Unifies the ``input()`` and ``token()`` methods of the original API into one call that generates
+        the sequence of tokens found in `text`, with WS transformation (into INDENT/DEDENT).
 
-        tok = self._lexer_facade.token()
+        :param text:    String to tokenize.
+        :type text:     str
+        :return:        Iterator (Generator) of tokens.
+        :rtype:         Generator[lex.LexToken, None, None]
+        """
+        self._init_indentation_context()
+        self._ply_lexer.input(text)
+
+        tok = self._ply_lexer.token()
 
         while tok:
-            next_tok = self._lexer_facade.token()   # Lookahead of 1.
+            next_tok = self._ply_lexer.token()   # Lookahead of 1.
 
             if tok.type == "WS":
-                if next_tok and next_tok.type not in ["EOF", "@"] \
-                        and tok.colno == 1 and self._paren_count == 0:   # Transform into INDENT / DEDENT tokens
-                    for indent_tok in self._ws_to_indent(tok):
+                if next_tok and next_tok.type not in ["EOF", "@"] and self._paren_count == 0:
+                    # Transform into INDENT / DEDENT tokens
+                    for indent_tok in self._ws_to_indentation_tokens(tok):
                         yield indent_tok
             else:
                 if tok.type in "<(":
@@ -132,8 +144,8 @@ class TMLexer:
 
             tok = next_tok
 
-        for term_tok in self._final_indent_tokens():
-            yield term_tok
+        for dedent_tok in self._generate_final_indentation_tokens():
+            yield dedent_tok
 
 
 # TODO - delete this.

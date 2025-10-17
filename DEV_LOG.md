@@ -79,3 +79,14 @@ Summary of what happened so far:
   - Some added refactory. Mainly need to decide if the Facade should be private or not.
 
 
+## October 17th, 2025
+### Compiler/Lexer
+- Finished the lexer implementation.
+  - Added documentation on classes / methods.
+  - Decided to **ignore all whitespace** that is not relevant to indentation in `_PLYLexerFacade`.
+- Left to do:
+  - Testing for the Lexer.
+  - Maybe some refactoring.
+
+
+

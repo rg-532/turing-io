@@ -2,6 +2,7 @@
 
 machine incrementer
 	right until '_'
+
 @loop:
 	left
 	if '1' do:

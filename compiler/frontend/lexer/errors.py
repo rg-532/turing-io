@@ -1,6 +1,29 @@
 import re
 
 
+def unescape_chars(s: str):
+    """Replaces the usual escaped characters in `string` with their raw versions for printing.
+
+    :param s:   String that potentially has escape characters.
+    :type s:    str
+    :return:    String with raw versions of escaped characters.
+    :rtype:     str
+    """
+    fixed_s = s.replace('\t', r'\t')
+    fixed_s = fixed_s.replace('\r', r'\r')
+    fixed_s = fixed_s.replace('\n', r'\n')
+
+    return fixed_s
+
+
+class InvalidCharError(ValueError):
+    """A lexer error to raise when the lexer could not tokenize some portion of the text.
+    """
+    def __init__(self, inv_char: str, inv_line: int, inv_col: int) -> None:
+        inv_char = unescape_chars(inv_char)
+        super().__init__(f"Could not tokenize character {inv_char} (line {inv_line} column {inv_col}).")
+
+
 class MixedIndentationError(ValueError):
     """A lexer error to raise when the scanned text uses a mixture of characters for indentation.
 
@@ -16,8 +39,11 @@ class MixedIndentationError(ValueError):
 
         assert match, "If error detected, match cannot be None."
 
-        message = (f"Indentation has both {repr(exp_char)} (line {exp_line}), and {repr(match.string)} "
+        exp_char = unescape_chars(exp_char)
+        inv_char = unescape_chars(match.string)
+        message = (f"Indentation has both '{exp_char}' (line {exp_line}), and {inv_char}"
                    f"(line {inv_line}, column {match.start()}).")
+
         super().__init__(message)
 
 

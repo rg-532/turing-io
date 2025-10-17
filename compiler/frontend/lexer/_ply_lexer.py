@@ -2,12 +2,15 @@ from typing import Optional, Tuple
 
 from ply import lex
 
+from compiler.frontend.lexer.errors import InvalidCharError
+
 
 # noinspection PyPep8Naming
 class _PLYLexerFacade:
     """Allows for a single point of integration with PLY's Lexer object.
         - Defines a specification of a PLY Lexer.
         - Implements column tracking, as was done in the docs.
+        - Filters WS (whitespace) token output - Only returns WS if on new line.
 
     :ivar ply_lexer:    Internal PLY Lexer object being managed.
     :type ply_lexer:    lex.Lexer
@@ -47,30 +50,42 @@ class _PLYLexerFacade:
     """Ignore (single line) comments (formatted as ``#...``)"""
 
     @lex.Token(r'[a-zA-Z_][a-zA-Z_0-9]*')
-    def t_IDENTIFIER(self, tok: lex.LexToken):
+    def t_IDENTIFIER(self, tok: lex.LexToken) -> lex.LexToken:
         tok.type = _PLYLexerFacade.reserved.get(tok.value, 'IDENTIFIER')
         return tok
 
     #noinspection PyTypeChecker
     @lex.Token(r'[0-9]+')
-    def t_INTEGER(self, tok: lex.LexToken):
+    def t_INTEGER(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = int(tok.value, base=10)
         return tok
 
     @lex.Token(r'\'[^\n]*\'')       # empty match = 'blank' symbol.
-    def t_SYMBOL(self, tok: lex.LexToken):
+    def t_SYMBOL(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = tok.value[1:-1]
         return tok
 
     @lex.Token(r'(\r?\n)+')
-    def t_EOL(self, tok: lex.LexToken):
-        tok.lexer.lineno += tok.value.count('\n')
+    def t_EOL(self, tok: lex.LexToken) -> lex.LexToken:
+        tok.value = tok.value.count('\n')
+        tok.lexer.lineno += tok.value
         return tok
 
     @lex.Token(r'[ \t]+')
-    def t_WS(self, tok: lex.LexToken):
-        return tok
+    def t_WS(self, tok: lex.LexToken) -> Optional[lex.LexToken]:
+        if self._new_line:
+            return tok
 
+        return None
+
+    #noinspection PyMethodMayBeStatic
+    def t_error(self, tok) -> lex.LexToken:
+        tok.type = "_ERR_INVALID_CHAR"
+        tok.value = tok.value[0]
+
+        tok.lexer.skip(1)       # Just so that PLY doesn't yell too much...
+
+        return tok
 
 
     def __init__(self) -> None:
@@ -78,7 +93,6 @@ class _PLYLexerFacade:
 
         self._new_line: Optional[bool] = None
         self._line_lexpos: Optional[int] = None
-
 
     def _set_token_colno(self, tok: lex.LexToken) -> None:
         """Sets the token `tok` column number in attribute `tok.colno`.
@@ -90,7 +104,6 @@ class _PLYLexerFacade:
 
         tok.colno = tok.lexpos - self._line_lexpos + 1
 
-
     def get_current_position(self) -> Tuple[int, int]:
         """Returns the internal ``ply_lexer`` positioning (line, column).
 
@@ -100,7 +113,6 @@ class _PLYLexerFacade:
         colno: int = self.ply_lexer.lexpos - self._line_lexpos + 1
 
         return lineno, colno
-
 
     def input(self, text: str) -> None:
         """Wraps ``self.ply_lexer.input(text)``.
@@ -117,17 +129,21 @@ class _PLYLexerFacade:
 
         return self.ply_lexer.input(text)
 
-
     def token(self) -> Optional[lex.LexToken]:
-        """Wraps ``self.ply_lexer.token()``, and adds column tracking.
+        """Wraps ``self.ply_lexer.token()`` and adds column tracking.
 
-        :return:    Edited token.
+        Returns the next token, or ``None`` if no next token exists.
+
+        :return:    Next token with its ``colno`` attribute set.
         """
-        tok = self.ply_lexer.token()
+        tok: lex.LexToken = self.ply_lexer.token()
 
         if tok is not None:
             self._set_token_colno(tok)
             self._new_line = (tok.type == "EOL")
+
+            if tok.type == "_ERR_INVALID_CHAR":
+                raise InvalidCharError(tok.value, tok.lineno, tok.colno)
 
         return tok
 

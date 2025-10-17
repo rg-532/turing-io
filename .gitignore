@@ -334,3 +334,6 @@ pyrightconfig.json
 # Temporary ignore .idea
 .idea
 
+# Other temporary ignore for sanity:
+.git-old
+
