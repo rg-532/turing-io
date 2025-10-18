@@ -3,22 +3,22 @@ from typing import Optional, List, Tuple, Generator
 from ply import lex
 
 from compiler.frontend.lexer.errors import MixedIndentationError, InconsistentIndentationError
-from compiler.frontend.lexer._ply_lexer import _PLYLexerFacade
+from compiler.frontend.lexer.ply_lexer import PLYLexerFacade
 
 # noinspection PyPep8Naming
 class TMLexer:
     """Lexer for ``.tm`` files.
 
-    Wraps a ``PLY`` Lexer, and transforms WS (whitespace) into INDENT/DEDENT tokens in the process.
+    Wraps a ``PLY`` Lexer, and transforms WHITESPACE into INDENT/DEDENT tokens in the process.
 
-    Also responsible for raising errors when indentation is ambiguous (See `errors.py` for more details).
+    Also, responsible for raising errors when indentation is ambiguous (See `errors.py` for more details).
     """
     def __init__(self) -> None:
-        self._ply_lexer: _PLYLexerFacade = _PLYLexerFacade()
+        self._ply_lexer: PLYLexerFacade = PLYLexerFacade()
 
 
     def _init_indentation_context(self) -> None:
-        """Initializes parameters for managing indentation - when and how to transform WS into INDENT/DEDENT
+        """Initializes parameters for managing indentation - when and how to transform WHITESPACE into INDENT/DEDENT
         """
         self._paren_count: int = 0                      # If greater than 0, no need to transform.
         self._indent_char: Optional[str] = None         # For mixed indentation. Set on first indentation detected.
@@ -29,14 +29,14 @@ class TMLexer:
         self._indent_stack: List[Tuple[int, int]] = [(0, 0)]     # (0, 0) = Dummy value
 
 
-    def _ws_to_indentation_tokens(self, tok: lex.LexToken) -> Generator[lex.LexToken, None, None]:
-        """Receives a whitespace token (WS) which should be dumped, transformed into a single INDENT token or
+    def _whitespace_to_indentation_tokens(self, tok: lex.LexToken) -> Generator[lex.LexToken, None, None]:
+        """Receives a WHITESPACE token which should be dumped, transformed into a single INDENT token or
         transformed into a sequence of DEDENT token, based on its length and previous indentations' lengths.
 
         Can raise :class: MixedIndentationError` or :class:`InconsistentIndentationError` (See these classes'
         docs for more info).
 
-        :param tok: WS type token to process.
+        :param tok: WHITESPACE type token to process.
         :type tok:  lex.LexToken
         :return:    An iterator of ``INDENT/DEDENT`` tokens (can be empty).
         :rtype:     Iterator[lex.LexToken]
@@ -114,7 +114,7 @@ class TMLexer:
 
     def tokenize(self, text: str) -> Generator[lex.LexToken, None, None]:
         """Unifies the ``input()`` and ``token()`` methods of the original API into one call that generates
-        the sequence of tokens found in `text`, with WS transformation (into INDENT/DEDENT).
+        the sequence of tokens found in `text`, with WHITESPACE transformation (into INDENT/DEDENT).
 
         :param text:    String to tokenize.
         :type text:     str
@@ -129,10 +129,10 @@ class TMLexer:
         while tok:
             next_tok = self._ply_lexer.token()   # Lookahead of 1.
 
-            if tok.type == "WS":
+            if tok.type == "WHITESPACE":
                 if next_tok and next_tok.type not in ["EOF", "@"] and self._paren_count == 0:
                     # Transform into INDENT / DEDENT tokens
-                    for indent_tok in self._ws_to_indentation_tokens(tok):
+                    for indent_tok in self._whitespace_to_indentation_tokens(tok):
                         yield indent_tok
             else:
                 if tok.type in "<(":
@@ -150,7 +150,7 @@ class TMLexer:
 
 # TODO - delete this.
 if __name__ == "__main__":
-    with open("../../test/data/tmlang/inc_scoped.tm") as f:
+    with open("../../test/data/programs/inc_scoped.tm") as f:
         read_text = f.read()
 
     lexer = TMLexer()

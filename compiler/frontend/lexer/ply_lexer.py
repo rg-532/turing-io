@@ -6,29 +6,32 @@ from compiler.frontend.lexer.errors import InvalidCharError
 
 
 # noinspection PyPep8Naming
-class _PLYLexerFacade:
+class PLYLexerFacade:
     """Allows for a single point of integration with PLY's Lexer object.
         - Defines a specification of a PLY Lexer.
         - Implements column tracking, as was done in the docs.
-        - Filters WS (whitespace) token output - Only returns WS if on new line.
+        - Filters WHITESPACE token output - Only returns WHITESPACE if on new line.
 
     :ivar ply_lexer:    Internal PLY Lexer object being managed.
     :type ply_lexer:    lex.Lexer
     """
 
     ### PLY Lexer specification ###
-    reserved = {
+    keywords = {
         'machine' : 'MACHINE',
         # 'tape' : 'TAPE',
         # 'register' : 'REGISTER',
-        'write' : 'WRITE',
-        'left' : 'LEFT',
-        'right' : 'RIGHT',
-        'until' : 'UNTIL',
-        'not' : 'NOT',
-        'if' : 'IF',
-        'do' : 'DO',
-        'goto' : 'GOTO',
+        'write' :   'WRITE',
+        'left' :    'LEFT',
+        'right' :   'RIGHT',
+        'until' :   'UNTIL',
+        'not' :     'NOT',
+        'if' :      'IF',
+        'do' :      'DO',
+        'goto' :    'GOTO',
+        'accept' :  'ACCEPT',
+        'reject' :  'REJECT',
+        'halt' :    'HALT',
     }
     """Keywords of the language"""
 
@@ -40,10 +43,10 @@ class _PLYLexerFacade:
         'INTEGER',
         'SYMBOL',
         'EOL',
-        'WS',       # Whitespace
+        'WHITESPACE',       # Whitespace
         'INDENT',
         'DEDENT',
-    ] + list(reserved.values())
+    ] + list(keywords.values())
     """Lexer token types"""
 
     t_ignore_COMMENT = r'\#.*'
@@ -51,7 +54,7 @@ class _PLYLexerFacade:
 
     @lex.Token(r'[a-zA-Z_][a-zA-Z_0-9]*')
     def t_IDENTIFIER(self, tok: lex.LexToken) -> lex.LexToken:
-        tok.type = _PLYLexerFacade.reserved.get(tok.value, 'IDENTIFIER')
+        tok.type = PLYLexerFacade.keywords.get(tok.value, 'IDENTIFIER')
         return tok
 
     #noinspection PyTypeChecker
@@ -72,7 +75,7 @@ class _PLYLexerFacade:
         return tok
 
     @lex.Token(r'[ \t]+')
-    def t_WS(self, tok: lex.LexToken) -> Optional[lex.LexToken]:
+    def t_WHITESPACE(self, tok: lex.LexToken) -> Optional[lex.LexToken]:
         if self._new_line:
             return tok
 
