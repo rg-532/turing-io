@@ -5,7 +5,7 @@ from ply import lex
 from compiler.frontend.lexer.errors import MixedIndentationError, InconsistentIndentationError
 from compiler.frontend.lexer.ply_lexer import PLYLexerFacade
 
-# noinspection PyPep8Naming
+
 class TMLexer:
     """Lexer for ``.tm`` files.
 
@@ -150,7 +150,7 @@ class TMLexer:
 
 # TODO - delete this.
 if __name__ == "__main__":
-    with open("../../test/data/programs/inc_scoped.tm") as f:
+    with open("tests/data/programs/inc_scoped.tm") as f:
         read_text = f.read()
 
     lexer = TMLexer()
