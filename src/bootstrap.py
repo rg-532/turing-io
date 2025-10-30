@@ -18,7 +18,7 @@ def setup_environment() -> None:
     data = toml.loads(toml_path.read_text())
 
     meta = data.get("tool", {}).get("poetry", {})
-    os.environ.setdefault("EXEC_START_TIME", datetime.now().isoformat())
+    os.environ.setdefault("EXEC_TIME", datetime.now().isoformat())
     os.environ.setdefault("PROJECT_ROOT", str(root_path))
     os.environ.setdefault("PROJECT_NAME", meta.get("name", "unknown"))
     os.environ.setdefault("PROJECT_VERSION", meta.get("version", "0.0.0"))

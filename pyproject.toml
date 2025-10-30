@@ -6,7 +6,6 @@ authors = ["Rom Gat <rom.gat532@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 package-mode = false    # Remove this when you want the project to install
-packages = [{include = "src.compiler"}] #TODO - configure this correctly
 
 keywords = ["turing", "turing machine", "turing-machine", "turing.io", "tm", "simulator", "compiler"]
 classifiers = [

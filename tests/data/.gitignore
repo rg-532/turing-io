@@ -1,0 +1,2 @@
+# Ignore golden-file_managers which are yet to be manually reviewed
+.manual/
