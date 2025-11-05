@@ -1,13 +1,11 @@
 """This module defines the base class for all file managers.
 """
-from typing import Generic, Literal, Self, TypeVar, TypeAlias, Union
+import logging
+from typing import Literal, Self
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 import os
-
-T_Path: TypeAlias = Union[str, os.PathLike]
-_T = TypeVar("_T")
 
 
 @dataclass
@@ -16,20 +14,20 @@ class _Permissions(object):
     write: bool = True
 
 
-class FileManager(ABC, Generic[_T]):
-    """Abstract class defining an interface to manage file_managers in the directory at ``dirpath``. If given as a relative
+class FileManager[T](ABC):
+    """Abstract class defining an interface to manage files in the directory at ``dirpath``. If given as a relative
     path (without leading '/' or 'D:\'), the path is relative from the root of execution. This class is generic in
-    terms of the type of data being read from and written to file_managers.
+    terms of the type of data being read from and written to files.
 
-    :ivar dirpath:      Path to directory of file_managers from running root.
-    :ivar perms:        Permissions on file_managers in the directory (read + write by default).
+    :ivar dirpath:      Path to directory of files from running root.
+    :ivar perms:        Permissions on files in the directory (read + write by default).
     """
-    def __init__(self, dirpath: T_Path):
+    def __init__(self, dirpath: str | os.PathLike):
         self.dirpath: Path = Path(dirpath)
-        self.perms = _Permissions
+        self.perms = _Permissions()
 
     @abstractmethod
-    def _read_core(self, fullpath: Path) -> _T:
+    def _read_core(self, fullpath: Path, **kwargs) -> T:
         """Abstract method, defining how to read a file with path ``filepath``.
 
         When overriding this method, note that:
@@ -43,7 +41,7 @@ class FileManager(ABC, Generic[_T]):
         ...
 
     @abstractmethod
-    def _write_core(self, fullpath: Path, data: _T) -> None:
+    def _write_core(self, fullpath: Path, data: T, **kwargs) -> None:
         """Abstract method, defining how to write generic ``data`` into file with path ``filepath``.
 
         When overriding this method, note that:
@@ -66,7 +64,7 @@ class FileManager(ABC, Generic[_T]):
         self.perms.write = "w" in perms
         return self
 
-    def read(self, relpath: T_Path) -> _T:
+    def read(self, relpath: str | os.PathLike, **kwargs) -> T:
         """Reads and returns the contents of a file with path ``relpath`` relative to this directory.
 
         :param relpath:     Relative path to file under this directory.
@@ -83,13 +81,13 @@ class FileManager(ABC, Generic[_T]):
         if not filepath.exists():
             raise FileNotFoundError(f"No file '{relpath}' under directory '{self.dirpath}'")
 
-        return self._read_core(filepath)
+        return self._read_core(filepath, **kwargs)
 
 
-    def write(self, relpath: T_Path, data: _T, allow_overwrite: bool = False) -> None:
+    def write(self, relpath: str | os.PathLike, data: T, allow_overwrite: bool = False, **kwargs) -> None:
         """Writes ``data`` into a file with path ``relpath`` relative to this directory.
 
-        By default, guards against overwriting existing file_managers (set ``allow_overwrite = True`` to allow overwriting).
+        By default, guards against overwriting existing files (set ``allow_overwrite = True`` to allow overwriting).
 
         :param relpath:         Relative path to file under this directory.
         :param data:            Data to write.
@@ -108,9 +106,10 @@ class FileManager(ABC, Generic[_T]):
 
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
-        return self._write_core(filepath, data)
+        self._write_core(filepath, data, **kwargs)
+        logging.info(f"Wrote file at {self.dirpath / relpath} (type = {type(data).__qualname__}).")
 
-    def exists(self, relpath: T_Path) -> bool:
+    def exists(self, relpath: str | os.PathLike) -> bool:
         """Checks if a file with path ``filepath`` exists relative to this directory.
 
         :param relpath:    Relative path to a file under this directory.
@@ -119,7 +118,7 @@ class FileManager(ABC, Generic[_T]):
         relpath = self.dirpath / relpath
         return relpath.exists()
 
-    def move(self, curr_relpath: T_Path, new_relpath: T_Path) -> None:
+    def move(self, curr_relpath: str | os.PathLike, new_relpath: str | os.PathLike) -> None:
         """Moves a file/subdirectory with path ``current_path`` under this directory to ``new_path`` under this
         directory.
 

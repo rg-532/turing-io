@@ -3,7 +3,7 @@ instances and adds on top of them some utilities useful for testing.
 """
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, Any, Union
+from typing import ClassVar, List, Optional, Any
 from dataclasses import dataclass
 import copy
 
@@ -71,7 +71,7 @@ class LexerToken(object):
 
 
     @staticmethod
-    def from_tok(tok: Union[PLYToken, LexerToken]) -> LexerToken:
+    def from_tok(tok: PLYToken | LexerToken) -> LexerToken:
         """Static method to initialize a ``TestToken`` from a ``ply.lex.LexToken`` instance or another ``TestToken``
         instance.
 
@@ -103,7 +103,7 @@ class LexerToken(object):
         return LexerToken(type_, value, lineno, colno)
 
     @staticmethod
-    def is_equiv(tok1: Union[PLYToken, LexerToken], tok2: Union[PLYToken, LexerToken], compare_pos: bool = True) -> bool:
+    def is_equiv(tok1: PLYToken | LexerToken, tok2: PLYToken | LexerToken, compare_pos: bool = True) -> bool:
         """Static method to check equivalency between ``tok1`` and ``tok2``.
 
         Note that the additional parameter ``compare_pos`` allows this comparison method to ignore positional

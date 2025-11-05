@@ -1,0 +1,7 @@
+{
+    "input_dir": "lexer/input/",
+    "output_dir": "lexer/output",
+    "golden_dir": "lexer/output/.golden/",
+
+    "input_patterns": ["*.tm", "**/*.tm"]
+}

@@ -1,2 +1,3 @@
-# Ignore golden-file_managers which are yet to be manually reviewed
+# Ignore golden-files which are yet to be manually reviewed
+.golden/
 .manual/

@@ -1,4 +1,4 @@
-from bootstrap import setup_environment
+from bootstrap import bootstrap_project
 
-setup_environment()
+bootstrap_project()
 
