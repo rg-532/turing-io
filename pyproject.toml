@@ -43,6 +43,7 @@ ruff = "^0.6"
 pytest = "^8.0"
 tabulate = "^0.9"
 sphinx = "^8.2.3"
+click = "^8.3.0"
 
 
 [tool.turing_io.test.schema_versions]

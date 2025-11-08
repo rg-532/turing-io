@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging.config
 import os
 from functools import cache
 from pathlib import Path
@@ -42,7 +41,7 @@ def set_environment_variables() -> Mapping[str, str]:
     to_add.setdefault("TOKEN_FILE_SCHEMA_VERSION", meta.get("token", "0"))
 
     for key in to_add.keys():
-        assert key not in os.environ, "Overriding `os.environ` key!"
+        assert key not in os.environ, f"Overriding `os.environ` key '{key}'!"
 
     os.environ.update(to_add)
     return to_add

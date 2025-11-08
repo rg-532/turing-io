@@ -22,10 +22,10 @@ class TMLexer:
         """
         self._paren_count: int = 0                      # If greater than 0, no need to transform.
         self._indent_char: Optional[str] = None         # For mixed indentation. Set on first indentation detected.
-        self._indent_char_line: Optional[int] = None    # For mixed indentatio reporting.
+        self._indent_char_line: Optional[int] = None    # For mixed indentation reporting.
                                                         # Holds line in which `_indent_char` was set.
 
-        # Stack for holding indentatio levels and their lines.
+        # Stack for holding indentation levels and their lines.
         self._indent_stack: List[Tuple[int, int]] = [(0, 0)]     # (0, 0) = Dummy value
 
 
@@ -95,9 +95,9 @@ class TMLexer:
 
 
     @staticmethod
-    def copy_token(tok: lex.LexToken, new_type: Optional[str] = None,
-    ) -> lex.LexToken:
-        """Makes a copy of token `tok`, and updates its type to be `tok_type`. Does not copy inner attribute lexpos.
+    def copy_token(tok: lex.LexToken, new_type: Optional[str] = None) -> lex.LexToken:
+        """Makes a copy of token `tok`, and updates its type to be `tok_type`.
+        Does not copy inner attribute ``lexpos``.
 
         :param tok:         Token to copy.
         :param new_type:    Type of the returned token.
@@ -147,14 +147,4 @@ class TMLexer:
         for dedent_tok in self._generate_final_indentation_tokens():
             yield dedent_tok
 
-
-# TODO - delete this.
-if __name__ == "__main__":
-    with open("tests/data/programs/inc_scoped.tm") as f:
-        read_text = f.read()
-
-    lexer = TMLexer()
-
-    for read_tok in lexer.tokenize(read_text):
-        print(f"Token {repr(read_tok.type)} {repr(read_tok.value)} ({read_tok.lineno} {read_tok.colno})")
 

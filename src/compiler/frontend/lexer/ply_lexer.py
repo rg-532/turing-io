@@ -10,7 +10,7 @@ class PLYLexerFacade:
     """Allows for a single point of integration with PLY's Lexer object.
         - Defines a specification of a PLY Lexer.
         - Implements column tracking, as was done in the docs.
-        - Filters WHITESPACE token output - Only returns WHITESPACE if on new line.
+        - Filters WHITESPACE token output - Only returns WHITESPACE if started a new line.
 
     :ivar ply_lexer:    Internal PLY Lexer object being managed.
     :type ply_lexer:    lex.Lexer
@@ -86,7 +86,7 @@ class PLYLexerFacade:
         tok.type = "_ERR_INVALID_CHAR"
         tok.value = tok.value[0]
 
-        tok.lexer.skip(1)       # Just so that PLY doesn't yell too much...
+        tok.lexer.skip(1)       # Just so that PLY doesn't raise an exception itself...
 
         return tok
 
