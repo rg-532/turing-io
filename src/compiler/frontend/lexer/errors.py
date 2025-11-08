@@ -3,7 +3,13 @@ import re
 from compiler.utils.string import normal_str_to_raw
 
 
-class InvalidCharError(ValueError):
+class LexerError(ValueError):
+    """Base class for all lexer errors. Inherits from :class:`ValueError` as the lexer receives inputs as strings.
+    """
+    pass
+
+
+class InvalidCharError(LexerError):
     """A lexer error to raise when the lexer could not tokenize some portion of the text.
     """
     def __init__(self, inv_char: str, inv_line: int, inv_col: int) -> None:
@@ -11,7 +17,7 @@ class InvalidCharError(ValueError):
         super().__init__(f"Could not tokenize character {inv_char} (line {inv_line} column {inv_col}).")
 
 
-class MixedIndentationError(ValueError):
+class MixedIndentationError(LexerError):
     """A lexer error to raise when the scanned text uses a mixture of characters for indentation.
 
     For example, the following code:
@@ -34,7 +40,7 @@ class MixedIndentationError(ValueError):
         super().__init__(message)
 
 
-class InconsistentIndentationError(ValueError):
+class InconsistentIndentationError(LexerError):
     """A lexer error to raise when the scanned text has a line with an indentation level which is less
     than the preceding line but does not match any of the previous indentation levels.
 

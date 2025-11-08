@@ -12,7 +12,8 @@ from compiler_tests.utils.files import JsonFileManager
 
 _logger = logging.getLogger(__name__)
 
-TEST_DATADIR: str = "tests/data/"
+TEST_DATADIR: str = os.path.join(os.environ.get("PROJECT_ROOT", "."), "tests/data/")
+"""Absolute path to testing data directory."""
 _reader = JsonFileManager(TEST_DATADIR).set_perms("r")
 
 
@@ -63,12 +64,6 @@ class LazyMetadata(object):
         return self._get_dir("output_dir")
 
     @cached_property
-    def golden_dir(self) -> str:
-        """Directory path for golden files.
-        """
-        return self._get_dir("golden_dir")
-
-    @cached_property
     def input_paths(self) -> List[str | bytes | os.PathLike]:
         """Sequence of all input paths specified by globbing patterns under "input_patterns" in the metadata file.
         """
@@ -86,17 +81,4 @@ class LazyMetadata(object):
 
     def __repr__(self):
         return f"{self.__class__.__qualname__}(fpath={self._fpath})"
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level="DEBUG")
-    lm = LazyMetadata("lexer/lexer.json")
-    LazyMetadata("lexer/lexer.json")
-    LazyMetadata("lexer/lexer.json")
-
-    for path_path in LazyMetadata("lexer/lexer.json").input_paths:
-        print(f"\t{path_path}")
-
-
-
 

@@ -9,10 +9,10 @@ TODO:
     - Add option in pytest execution to override goldens (or have that by default w/ option to turn off).
 """
 import logging
+import os.path
 from typing import List, Optional
 
 import pytest
-import jsonpickle.errors
 
 from compiler.frontend.lexer import TMLexer
 from compiler_tests.utils.metadata import LazyMetadata
@@ -24,7 +24,7 @@ from compiler_tests.utils.files import (
 )
 
 
-_metadata: LazyMetadata = LazyMetadata("lexer/lexer.json")
+_metadata: LazyMetadata = LazyMetadata("metadata/lexer.json")
 """Metadata file from `[root]/tests/data/`"""
 
 @pytest.fixture(scope="module")
@@ -32,14 +32,8 @@ def input_reader() -> TextFileManager:
     return TextFileManager(_metadata.input_dir).set_perms("r")
 
 @pytest.fixture(scope="module")
-def output_reader() -> GoldenFileManager[TokenFileSchema]:
-    return GoldenFileManager(_metadata.output_dir).set_perms("r")
-
-@pytest.fixture(scope="module")
-def golden_writer() -> GoldenFileManager[TokenFileSchema]:
-    """Specifically for writing golden file outputs."""
-    return GoldenFileManager(_metadata.golden_dir).set_perms("w")
-
+def output_manager() -> GoldenFileManager[TokenFileSchema]:
+    return GoldenFileManager(_metadata.output_dir)
 
 @pytest.fixture
 def lexer() -> TMLexer:
@@ -67,30 +61,29 @@ def expected_relpath(input_relpath) -> str:
     return f"{input_relpath}.tok"
 
 @pytest.fixture
-def raw_expected_schema(
-        output_reader, expected_relpath,
-        request, lexer_tokens, golden_writer  # For when read fails.
-) -> Optional[TokenFileSchema]:
-    """Returns the expected output's schema or an exception thrown when reading."""
-    cause = None
+def golden_relpath(expected_relpath) -> str:
+    dirpath, filename = os.path.split(expected_relpath)
+    return os.path.join(dirpath, ".golden/", filename)
 
-    try:
-        return output_reader.read(expected_relpath)
-    except FileNotFoundError as exc:
-        cause = exc
-    except (Exception, jsonpickle.errors.ClassNotFoundError) as exc:
-        cause = exc
-    finally:
-        if cause is not None:
-            reason = f"{cause.__class__.__qualname__}: {str(cause)}"
-            golden = TokenFileSchema(
-                origin=GoldenFileOriginSchema(
-                    creator=request.node.name,
-                    reason=f"Fixture {request.fixturename} on {expected_relpath} got {reason}"),
-                data=TokenFileDataSchema(tokens=lexer_tokens))
-            golden_writer.write(expected_relpath, golden, allow_overwrite=True)
-            logging.warning(reason)
-            pytest.skip()
+@pytest.fixture
+def raw_expected_schema(output_manager, expected_relpath, request) -> TokenFileSchema:
+    """Returns the expected output's schema or an exception thrown when reading."""
+    schema, cause = output_manager.safe_read(expected_relpath)
+
+    if schema is None:
+        reason = f"{cause.__class__.__qualname__}: {str(cause)}"
+        golden = TokenFileSchema(
+            origin=GoldenFileOriginSchema(
+                creator=request.node.name,
+                reason=f"Fixture '{request.fixturename}' on '{expected_relpath}' got ({reason})"),
+            data=TokenFileDataSchema(tokens=request.getfixturevalue("lexer_tokens")))
+        output_manager.write(request.getfixturevalue("golden_relpath"), golden, allow_overwrite=True)
+
+        logging.warning(reason)
+        pytest.skip()
+
+    return schema
+
 
 @pytest.fixture
 def checked_expected_schema(raw_expected_schema) -> TokenFileSchema:

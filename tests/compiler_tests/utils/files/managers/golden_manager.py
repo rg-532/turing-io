@@ -1,8 +1,10 @@
 """This module defines a file manager for golden files (JSON files managed with ``jsonpickle``).
 """
+import os
 from pathlib import Path
+from typing import Tuple, Optional
 
-import jsonpickle
+import jsonpickle.errors
 
 from compiler_tests.utils.files.schemas.golden_schema import GoldenFileSchema
 from compiler_tests.utils.files.managers.base_manager import FileManager
@@ -14,6 +16,27 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
 
     Keyword arguments to ``read()`` and ``write()`` are passed to the ``jsonpickle`` library.
     """
+    def safe_read(
+            self,
+            relpath: str | os.PathLike,
+            **kwargs
+    ) -> Tuple[Optional[T_Schema], Optional[Exception | jsonpickle.errors.ClassNotFoundError]]:
+        """Safe version of ``FileManager.read``, which also returns the exception instead of raising it.
+
+        Only one item in the returned tuple is not set to None, based on what happened during ``read``:
+            - If an exception ``cause`` was raised, the return value is ``(None,cause)``.
+            - Otherwise, the return value is ``(schema,None)``.
+
+        :param relpath: Relative path to file under this directory.
+        :param kwargs:  Additional keyword parameters for ``jsonpickle.decode``.
+        :return:        Tuple of (result, exc), one of which is set to ``None``.
+        """
+        try:
+            return super().read(relpath, **kwargs), None
+        except (Exception, jsonpickle.errors.ClassNotFoundError) as cause:
+            return None, cause
+
+
     def _read_core(self, fullpath: Path, **kwargs) -> T_Schema:
         defaults = dict(on_missing="error")
         defaults.update(kwargs)
