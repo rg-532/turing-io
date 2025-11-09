@@ -1,7 +1,7 @@
 """This module defines the base class for all file managers.
 """
 import logging
-from typing import Literal, Self
+from typing import Literal, Self, Optional
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,7 +22,10 @@ class FileManager[T](ABC):
     :ivar dirpath:      Path to directory of files from running root.
     :ivar perms:        Permissions on files in the directory (read + write by default).
     """
-    def __init__(self, dirpath: str | os.PathLike):
+    def __init__(self, dirpath: Optional[str | os.PathLike] = None):
+        if dirpath is None:
+            dirpath = os.environ.get("PROJECT_ROOT", ".")
+
         self.dirpath: Path = Path(dirpath)
         self.perms = _Permissions()
 
@@ -63,11 +66,17 @@ class FileManager[T](ABC):
         self.perms.read = "r" in perms
         self.perms.write = "w" in perms
         return self
+    
+    def _get_path(self, filepath: str | os.PathLike) -> Path:
+        if os.path.isabs(filepath):
+            return Path(filepath)
 
-    def read(self, relpath: str | os.PathLike, **kwargs) -> T:
+        return self.dirpath / filepath
+    
+    def read(self, filepath: str | os.PathLike, **kwargs) -> T:
         """Reads and returns the contents of a file with path ``relpath`` relative to this directory.
 
-        :param relpath:     Relative path to file under this directory.
+        :param filepath:    Relative path to file under this directory.
         :return:            Contents of the file.
 
         :raises FileNotFoundError:  If the file does not exist under this directory.
@@ -76,20 +85,20 @@ class FileManager[T](ABC):
         if not self.perms.read:
             raise PermissionError(f"Directory '{self.dirpath}' does not have read permission.")
 
-        filepath = self.dirpath / relpath
+        filepath = self._get_path(filepath)
 
         if not filepath.exists():
-            raise FileNotFoundError(f"No file '{relpath}' under directory '{self.dirpath}'")
+            raise FileNotFoundError(f"No such file '{filepath}'")
 
         return self._read_core(filepath, **kwargs)
 
 
-    def write(self, relpath: str | os.PathLike, data: T, allow_overwrite: bool = False, **kwargs) -> None:
+    def write(self, filepath: str | os.PathLike, data: T, allow_overwrite: bool = False, **kwargs) -> None:
         """Writes ``data`` into a file with path ``relpath`` relative to this directory.
 
         By default, guards against overwriting existing files (set ``allow_overwrite = True`` to allow overwriting).
 
-        :param relpath:         Relative path to file under this directory.
+        :param filepath:         Relative path to file under this directory.
         :param data:            Data to write.
         :param allow_overwrite: Boolean flag indicating whether overwriting existing file is allowed.
 
@@ -99,15 +108,15 @@ class FileManager[T](ABC):
         if not self.perms.write:
             raise PermissionError(f"Directory {self.dirpath} does not have write permission.")
 
-        filepath = self.dirpath / relpath
+        filepath = self._get_path(filepath)
 
         if not allow_overwrite and filepath.exists():
-            raise FileExistsError(f"File '{relpath}' exists under '{self.dirpath}'")
+            raise FileExistsError(f"File '{filepath}' already exists")
 
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
         self._write_core(filepath, data, **kwargs)
-        logging.info(f"Wrote file at {self.dirpath / relpath} (type = {type(data).__qualname__}).")
+        logging.info(f"Wrote file at {self.dirpath / filepath} (type = {type(data).__qualname__}).")
 
     def exists(self, relpath: str | os.PathLike) -> bool:
         """Checks if a file with path ``filepath`` exists relative to this directory.
