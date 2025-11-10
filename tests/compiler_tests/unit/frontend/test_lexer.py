@@ -15,7 +15,7 @@ from typing import List, Optional
 import pytest
 
 from compiler.frontend.lexer import TMLexer
-from compiler_tests.utils.metadata import LazyMetadata
+from compiler_tests.utils.metadata import lazy_metadata
 
 from compiler_tests.utils.objects.tokens import LexerToken
 from compiler_tests.utils.files import (
@@ -24,7 +24,7 @@ from compiler_tests.utils.files import (
 )
 
 
-_metadata: LazyMetadata = LazyMetadata("metadata/lexer.json")
+_metadata = lazy_metadata("metadata/lexer.json")
 """Metadata file from `[root]/tests/data/`"""
 
 @pytest.fixture(scope="module")

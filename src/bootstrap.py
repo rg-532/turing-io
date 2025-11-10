@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import os
+import tomllib
 from functools import cache
 from pathlib import Path
 from datetime import datetime
 from typing import Mapping
 
-import tomllib
 
 @cache
 def bootstrap_project() -> None:

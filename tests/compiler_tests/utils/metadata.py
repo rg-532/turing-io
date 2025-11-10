@@ -17,8 +17,7 @@ TEST_DATADIR: str = os.path.join(os.environ.get("PROJECT_ROOT", "."), "tests/dat
 _reader = JsonFileManager(TEST_DATADIR).set_perms("r")
 
 
-@cache
-class LazyMetadata(object):
+class _LazyMetadata(object):
     """This class is used to lazily-load testing metadata from a JSON file.
 
     This class heavily relies on caching to implement its lazy loading:
@@ -81,4 +80,9 @@ class LazyMetadata(object):
 
     def __repr__(self):
         return f"{self.__class__.__qualname__}(fpath={self._fpath})"
+
+
+@cache
+def lazy_metadata(fpath: str | bytes | os.PathLike) -> _LazyMetadata:
+    return _LazyMetadata(fpath)
 
