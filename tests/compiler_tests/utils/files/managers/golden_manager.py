@@ -6,6 +6,7 @@ from typing import Tuple, Optional
 
 import jsonpickle.errors
 
+from compiler_tests.utils.files.errors import ClassNotFoundError
 from compiler_tests.utils.files.schemas.golden_schema import GoldenFileSchema
 from compiler_tests.utils.files.managers.base_manager import FileManager
 
@@ -20,7 +21,7 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
             self,
             relpath: str | os.PathLike,
             **kwargs
-    ) -> Tuple[Optional[T_Schema], Optional[Exception | jsonpickle.errors.ClassNotFoundError]]:
+    ) -> Tuple[Optional[T_Schema], Optional[Exception]]:
         """Safe version of ``FileManager.read``, which also returns the exception instead of raising it.
 
         Only one item in the returned tuple is not set to None, based on what happened during ``read``:
@@ -33,12 +34,20 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
         """
         try:
             return super().read(relpath, **kwargs), None
-        except (Exception, jsonpickle.errors.ClassNotFoundError) as cause:
+        except Exception as cause:
             return None, cause
 
+    @staticmethod
+    def _raise_class_not_found_error(class_name: str) -> None:
+        """Helper method to raise custom :class:`ClassNotFoundError` (see that class's doc).
+
+        :param class_name:          Name of the class which was not found.
+        :raise ClassNotFoundError:  Always happens.
+        """
+        raise ClassNotFoundError(f"Could not find class {class_name}")
 
     def _read_core(self, fullpath: Path, **kwargs) -> T_Schema:
-        defaults = dict(on_missing="error")
+        defaults = dict(on_missing=self._raise_class_not_found_error)
         defaults.update(kwargs)
 
         return jsonpickle.decode(fullpath.read_text(), **defaults)
