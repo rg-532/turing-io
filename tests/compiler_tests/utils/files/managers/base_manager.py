@@ -1,6 +1,7 @@
 """This module defines the base class for all file managers.
 """
 import logging
+import shutil
 from typing import Literal, Self, Optional
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -67,7 +68,7 @@ class FileManager[T](ABC):
         self.perms.write = "w" in perms
         return self
     
-    def _get_path(self, filepath: str | os.PathLike) -> Path:
+    def get_path(self, filepath: str | os.PathLike) -> Path:
         if os.path.isabs(filepath):
             return Path(filepath)
 
@@ -85,7 +86,7 @@ class FileManager[T](ABC):
         if not self.perms.read:
             raise PermissionError(f"Directory '{self.dirpath}' does not have read permission.")
 
-        filepath = self._get_path(filepath)
+        filepath = self.get_path(filepath)
 
         if not filepath.exists():
             raise FileNotFoundError(f"No such file '{filepath}'")
@@ -108,7 +109,7 @@ class FileManager[T](ABC):
         if not self.perms.write:
             raise PermissionError(f"Directory {self.dirpath} does not have write permission.")
 
-        filepath = self._get_path(filepath)
+        filepath = self.get_path(filepath)
 
         if not allow_overwrite and filepath.exists():
             raise FileExistsError(f"File '{filepath}' already exists")
@@ -127,18 +128,48 @@ class FileManager[T](ABC):
         relpath = self.dirpath / relpath
         return relpath.exists()
 
-    def move(self, curr_relpath: str | os.PathLike, new_relpath: str | os.PathLike) -> None:
-        """Moves a file/subdirectory with path ``current_path`` under this directory to ``new_path`` under this
+    def move(self, curr_path: str | os.PathLike, new_path: str | os.PathLike, replace: bool  = False) -> None:
+        """Moves a file/subdirectory with path ``curr_path`` under this directory to ``new_path`` under this
         directory.
 
-        :param curr_relpath:    Path of existing file/subdirectory under this directory.
-        :param new_relpath:        New path of the file/subdirectory under this directory.
+        :param curr_path:   Path of existing file/subdirectory under this directory.
+        :param new_path:    New path of the file/subdirectory under this directory.
+        :param replace:     If true, replaces the file/subdirectory at `new_path` if it exists.
+                            If false, and some file/subdirectory exists at `new_path`, raises :class:`FileExistsError`
 
-        :raises FileNotFoundError:  If the file/subdirectory at ``current_path`` under this directory does not exist.
+        :raises FileNotFoundError:  If the file/subdirectory at ``curr_path`` under this directory does not exist.
+        :raises FileExistsError:    If ``replace=False`` and a file/subdirectory exists at ``new_path``
         """
-        curr_relpath = self.dirpath / curr_relpath
-        new_relpath = self.dirpath / new_relpath
-        new_relpath.parent.mkdir(parents=True, exist_ok=True)
-        curr_relpath.rename(new_relpath)
+        curr_path = self.dirpath / curr_path
+        new_path = self.dirpath / new_path
+        new_path.parent.mkdir(parents=True, exist_ok=True)
 
+        if replace:
+            curr_path.replace(new_path)
+        else:
+            curr_path.rename(new_path)
+
+        logging.info(f"Moved file from {curr_path} to {new_path}.")
+
+    def copy_file(self, curr_path: str | os.PathLike, new_path: str | os.PathLike, replace: bool  = False) -> None:
+        """Copies a file with path ``curr_path`` under this directory to ``new_path`` under this directory.
+
+        :param curr_path:   Path of existing file under this directory.
+        :param new_path:    New path of the file under this directory.
+        :param replace:     If true, replaces the file at `new_path` if it exists.
+                            If false, and some file exists at `new_path`, raises :class:`FileExistsError`
+
+        :raises FileNotFoundError:  If the file at ``curr_path`` under this directory does not exist.
+        :raises FileExistsError:    If ``replace=False`` and a file exists at ``new_path``.
+        :raises SamePathError:      If ``new_path==curr_path``.
+        """
+        curr_path = self.dirpath / curr_path
+        new_path = self.dirpath / new_path
+        new_path.parent.mkdir(parents=True, exist_ok=True)
+
+        if not replace and new_path.exists():
+            raise FileExistsError(f"File already exists at {new_path}")
+
+        shutil.copy2(curr_path, new_path)
+        logging.info(f"Copied file from {curr_path} to {new_path}.")
 

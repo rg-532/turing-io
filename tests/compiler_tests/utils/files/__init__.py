@@ -4,3 +4,4 @@ for handling different types of files.
 
 from compiler_tests.utils.files.managers import *
 from compiler_tests.utils.files.schemas import *
+from compiler_tests.utils.files.errors import *

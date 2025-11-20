@@ -1,3 +1,4 @@
 # Ignore golden-files which are yet to be manually reviewed
 .golden/
 .manual/
+.backup/

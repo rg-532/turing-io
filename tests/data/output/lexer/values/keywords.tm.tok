@@ -1,6 +1,6 @@
 {
   "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileSchema",
-  "file_type": "LEXER_TOKENS",
+  "file_type": "TokenFileSchema",
   "origin": {
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
     "creator": "test_lexer_valid[basic/keywords.tm]",
@@ -8,7 +8,7 @@
     "timestamp": "2025-11-09T16:49:38.544198"
   },
   "project_version": "0.1.0",
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "metadata": {
     "py/object": "compiler_tests.utils.files.schemas.base_schema.EmptySchema"
   },
@@ -99,6 +99,7 @@
         "lineno": 1,
         "colno": 110
       }
-    ]
+    ],
+    "exit_exc": null
   }
 }

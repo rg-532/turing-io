@@ -1,3 +1,7 @@
+__all__ = [
+    'ClassNotFoundError'
+]
+
 
 class ClassNotFoundError(ValueError):
     """Raised when attempting to decode with ``jsonpickle``, and it encounters a :class:`ClassNotFoundError`.

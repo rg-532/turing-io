@@ -1,3 +1,3 @@
 from manrev import cli
 
-cli.manrev()
+cli.manrev_cli()
