@@ -1,16 +1,42 @@
 # Notes
 
 ## Future Ideas
-### Migration of Output Files
-Schemas which define output files may change overtime, which incurs version increments. There is 
-enough information within the project configuration to detect outdated files (Given that they
-actually have defined formats), but there is no mechanism in place to migrate them, so such a
-mechanism may be desired.
+### Data Migrator Refactory
+A tool for data migration of golden files has been implemented, but the implementation is frail
+(doesn't feel very maintainable) and may need refactory.
 
-Because many internal files (including outputted **Bytecode** and **C/C++ code**) can differ while
-project versioning semantics hold (Meaning that minor feature additions do not break the program,
-but do break testing), some mechanism to ensure that previously generated expected output files are
-still relevant may be required.
+The tool currently supplies two base commands: `scan` and `migrate`, and the CLI itself allows
+for command chaining (you may invoke `data-mig scan migrate`, for example), but chaining may not
+fit the implementation:
+- It allows for multiple scan invocations, which seems unnecessary.
+- Invoking `migrate` with `--show-only` allows to show the migration paths without executing any
+  migrations, but if preceded with `scan`, it shows info about files twice, and the first set of
+  files shown does not include files which are added after `migrate`.
+
+Conversely, not utilizing chaining would mean that migration of entire directory will rely on
+default suffixes supported by the underlying `scan` implementation, unless suffixes are allowed
+for `migrate`, but this option is only applicable to one specific scenario.
+
+Files to be considered for refactory:
+- `data_migrator/logic/ops.py` (Provides API for the CLI commands)
+- `data_migrator/cli.py` (Provides the CLI commands themselves)
+
+Suggestion - Change the current scheme in the following way:
+- Remove chaining from the base group.
+- Implement the following command hierarchy:
+  - `scan [-s suffix]` (multiple suffixes allowed).
+  - `migrate [--show-only] [--backup/--no-backup] COMMAND`
+    Command `migrate` becomes a subgroup of `data-mig`, allowing:
+    - `files <file_path> [additional_file_paths]` (at least one file).
+    - `dir [-s suffix]` (multiple suffixes allowed).
+- Break up the `ops` layer so that it is more fine-grained and allows for modular implementation:
+  - `collect_files` will use `globbing` to find all kinds of files.
+  - `filter_files` will filter for files needing migration only (or other options).
+  - `get/execute_file_migration` will operate similarly to before.
+
+This approach removes confusion occurring when both `files` are specified and `scan` appears
+before `migrate`, while exposing all desired APIs. Duplication will be handled through the refactory
+of `ops`.
 
 
 ### File Traceability

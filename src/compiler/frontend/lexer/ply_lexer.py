@@ -146,7 +146,7 @@ class PLYLexerFacade:
             self._new_line = (tok.type == "EOL")
 
             if tok.type == "_ERR_INVALID_CHAR":
-                raise InvalidCharError(tok.value, tok.lineno, tok.colno)
+                raise InvalidCharError.from_params(tok.value, tok.lineno, tok.colno)
 
         return tok
 

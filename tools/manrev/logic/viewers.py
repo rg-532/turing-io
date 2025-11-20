@@ -4,9 +4,8 @@ import abc
 import os
 import subprocess
 import tempfile
-from typing import Optional, Dict, Type, TypeAlias, TypeVar
+from typing import Optional, Dict, Type, TypeAlias, TypeVar, Generic
 
-from mypyc.ir.ops import Generic
 from tabulate import tabulate
 
 from compiler_tests.utils.files import GoldenFileSchema, TokenFileSchema
@@ -90,6 +89,7 @@ class TokenFileViewer(GeditViewer[TokenFileSchema]):
         }, headers="keys")
 
         tmp.write(table)
+        tmp.write(f"\n\n\nexit_exc:\n\t{repr(self.schema.data.exit_exc)}")
 
 
 def get_tempfile(

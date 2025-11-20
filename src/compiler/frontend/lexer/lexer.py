@@ -54,7 +54,7 @@ class TMLexer:
 
         # Check if text has mixed indentation
         if tok.value != self._indent_char * indent_length:
-            raise MixedIndentationError(self._indent_char, self._indent_char_line, tok.value, tok.lineno)
+            raise MixedIndentationError.from_params(self._indent_char, self._indent_char_line, tok.value, tok.lineno)
 
         # Determine if this is a DEDENT / INDENT case
         if indent_length > self._indent_stack[-1][0]:
@@ -69,7 +69,7 @@ class TMLexer:
 
             # Check if text has inconsistent indentation
             if indent_length > self._indent_stack[-1][0]:
-                raise InconsistentIndentationError(*self._indent_stack[-1], indent_length, tok.lineno)
+                raise InconsistentIndentationError.from_params(*self._indent_stack[-1], indent_length, tok.lineno)
 
             self._indent_stack[-1] = (indent_length, tok.lineno)    # Override line value
 

@@ -3,7 +3,6 @@ from collections import OrderedDict
 from typing import Tuple, List
 
 import click
-from docutils.nodes import description
 from tabulate import tabulate
 
 from compiler_tests.utils.files import GoldenFileManager
@@ -51,9 +50,7 @@ def scan(ctx: click.Context, suffixes: Tuple[str, ...]) -> None:
               help="Shows a detailed description of migration and exit.")
 @click.pass_context
 def migrate(ctx: click.Context, files: Tuple[str, ...], show_only: bool, backup: bool) -> None:
-    """Migrate files at [file_paths] to latest version.
-
-    Can be chained after 'scan' to migrate all results, but requires [file_paths] to be empty.
+    """Migrate files at [file_paths] to latest version. Can be chained after 'scan' to migrate all results.
     """
     data = ctx.obj
     files = list(files)

@@ -10,11 +10,12 @@ TODO:
 """
 import logging
 import os.path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import pytest
 
 from compiler.frontend.lexer import TMLexer
+from compiler.frontend.lexer.errors import LexerError
 from compiler_tests.utils.metadata import lazy_metadata
 
 from compiler_tests.utils.objects.tokens import LexerToken
@@ -50,10 +51,26 @@ def input_data(input_reader, input_relpath) -> str:
     return input_reader.read(input_relpath)
 
 @pytest.fixture
-def lexer_tokens(lexer, input_data) -> List[LexerToken]:
-    """TODO - add error handling.
-    Assumes the input data is fully scannable (Raises some error otherwise)."""
-    return [LexerToken.from_tok(tok) for tok in lexer.tokenize(input_data)]
+def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerError]]:
+    """Captures scanned tokens and exit exception if occurred."""
+    tokens: List[LexerToken] = []
+    exit_exc: Optional[LexerError] = None
+
+    try:
+        for tok in lexer.tokenize(input_data):
+            tokens.append(LexerToken.from_tok(tok))
+    except LexerError as exc:
+        exit_exc = exc
+
+    return tokens, exit_exc
+
+@pytest.fixture
+def lexer_tokens(lexer_output) -> List[LexerToken]:
+    return lexer_output[0]
+
+@pytest.fixture
+def lexer_exit_exc(lexer_output) -> Optional[LexerError]:
+    return lexer_output[1]
 
 
 @pytest.fixture
@@ -76,9 +93,10 @@ def raw_expected_schema(output_manager, expected_relpath, request) -> TokenFileS
             origin=GoldenFileOriginSchema(
                 creator=request.node.name,
                 reason=f"Fixture '{request.fixturename}' on '{expected_relpath}' got ({reason})"),
-            data=TokenFileDataSchema(tokens=request.getfixturevalue("lexer_tokens")))
+            data=TokenFileDataSchema(
+                tokens=request.getfixturevalue("lexer_tokens"),
+                exit_exc=request.getfixturevalue("lexer_exit_exc")))
         output_manager.write(request.getfixturevalue("golden_relpath"), golden, allow_overwrite=True)
-
         logging.warning(reason)
         pytest.skip()
 
@@ -96,13 +114,19 @@ def checked_expected_schema(raw_expected_schema) -> TokenFileSchema:
     return raw_expected_schema
 
 @pytest.fixture
-def expected_tokens(checked_expected_schema) -> Optional[List[LexerToken]]:
+def expected_tokens(checked_expected_schema) -> List[LexerToken]:
     return list(checked_expected_schema.data.tokens)
 
+@pytest.fixture
+def expected_exit_exc(checked_expected_schema) -> Optional[LexerError]:
+    return checked_expected_schema.data.exit_exc
 
 
-def test_lexer_valid(lexer_tokens, expected_tokens):
+def test_lexer_tokens(lexer_tokens, expected_tokens):
     assert lexer_tokens == expected_tokens
+
+def test_lexer_exit_exc(lexer_exit_exc, expected_exit_exc):
+    assert lexer_exit_exc == expected_exit_exc
 
 
 

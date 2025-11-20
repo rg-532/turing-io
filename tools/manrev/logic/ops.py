@@ -81,7 +81,6 @@ def accept_file(file: str, manager: GoldenFileManager) -> None:
 
     try:
         manager.move(file, new_path)
-        _logger.info(f"Moved {file} to {new_path}")
     except FileNotFoundError as exc:
         _logger.error(f"{type(exc).__qualname__}: {exc}")
 
