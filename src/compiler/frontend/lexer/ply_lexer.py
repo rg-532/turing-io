@@ -63,7 +63,7 @@ class PLYLexerFacade:
         tok.value = int(tok.value, base=10)
         return tok
 
-    @lex.Token(r'\'\S*\'')       # empty match = 'blank' symbol.
+    @lex.Token(r'\'[a-zA-Z0-9+\-*/^=&|~()[\]{}_#$%]{,3}\'')
     def t_SYMBOL(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = tok.value[1:-1]
         return tok

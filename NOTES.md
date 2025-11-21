@@ -79,7 +79,7 @@ any directory+type combination mandates an appropriate, separate fixture.
 
 Assuming we proceed with a more sophisticated metadata loading capability, which is able to specify
 multiple source directory for inputs (and potential outputs), and define the type of data being loaded,
-a more complex mechanism, using composition, is required.
+a more complex mechanism, using composition, may be required.
 
 It should be noted that such a mechanism was created and dumped due to incompatibility with generics
 w.r.t. the read/write data type, so a more sophisticated approach to this is required.

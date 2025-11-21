@@ -5,7 +5,7 @@
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
     "creator": "test_lexer_exit_exc[scoping/mixed_indent_err.tm]",
     "reason": "Fixture 'raw_expected_schema' on 'scoping/mixed_indent_err.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/scoping/mixed_indent_err.tm.tok')",
-    "timestamp": "2025-11-20T21:54:00.663235"
+    "timestamp": "2025-11-21T18:48:11.712428"
   },
   "project_version": "0.1.0",
   "schema_version": "1.2",
