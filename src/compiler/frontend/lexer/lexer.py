@@ -130,7 +130,7 @@ class TMLexer:
             next_tok = self._ply_lexer.token()   # Lookahead of 1.
 
             if tok.type == "WHITESPACE":
-                if next_tok and next_tok.type not in ["EOF", "@"] and self._paren_count == 0:
+                if next_tok and next_tok.type not in ["EOL", "@"] and self._paren_count == 0:
                     # Transform into INDENT / DEDENT tokens
                     for indent_tok in self._whitespace_to_indentation_tokens(tok):
                         yield indent_tok

@@ -31,14 +31,7 @@ def scan(root_dir: str, suffixes: Tuple['str']) -> None:
 def show(file: str) -> None:
     """Show the file at <file_path> (absolute or relative to `cwd`)."""
     manager = GoldenFileManager(os.getcwd())
-    mod_time = os.path.getmtime(file)
     prompt = "Accept the file (move outside '.golden' directories)?"
 
     if ops.view_file(file, manager) and click.confirm(prompt):
-        if mod_time != os.path.getmtime(file):
-            click.secho('Warning: File has been modified!    ', nl=False, fg='yellow')
-
-            if not click.confirm("Accept anyway?"):
-                return
-
         ops.accept_file(file, manager)

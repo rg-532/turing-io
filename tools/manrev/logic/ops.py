@@ -44,6 +44,7 @@ def view_file(file: str, manager: GoldenFileManager) -> bool:
     :return:        Flag specifying whether file was viewed (or some error occurred).
     """
     schema, cause = manager.safe_read(file)
+    mod_time = os.path.getmtime(file)
 
     if schema is None:
         _logger.error(f"{type(cause).__qualname__}: {cause}")
@@ -58,6 +59,9 @@ def view_file(file: str, manager: GoldenFileManager) -> bool:
     with get_tempfile(fpath=file, mode="w+t") as tmp:
         _logger.debug(f"Viewing contents of '{file}' ({type(schema).__qualname__})...")
         viewer.view(tmp)
+
+    if mod_time != os.path.getmtime(file):
+        _logger.warning(f"File '{file}' has been modified!")
 
     return True
 
