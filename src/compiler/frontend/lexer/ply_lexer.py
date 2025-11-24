@@ -17,25 +17,20 @@ class PLYLexerFacade:
     """
 
     ### PLY Lexer specification ###
-    keywords = {
-        'machine' : 'MACHINE',
-        # 'tape' : 'TAPE',
-        # 'register' : 'REGISTER',
-        'write' :   'WRITE',
-        'left' :    'LEFT',
-        'right' :   'RIGHT',
-        'until' :   'UNTIL',
-        'not' :     'NOT',
-        'if' :      'IF',
-        'do' :      'DO',
-        'goto' :    'GOTO',
-        'accept' :  'ACCEPT',
-        'reject' :  'REJECT',
-        'halt' :    'HALT',
-    }
+    keywords = {kw: kw.upper() for kw in [
+        # IMPLEMENTED #
+        'machine',                                                      # Declarations
+        'write', 'left', 'right', 'until', 'accept', 'reject', 'halt',  # Basic Operations
+        'not', 'if', 'do', 'goto',                                      # Basic Control
+
+        # FUTURE #
+        'tape', 'register',                                             # Future Declarations
+        'on', 'is', 'and', 'or',                                        # Multi-tape Support
+        'else', 'elif', 'while', 'for', 'break', 'continue', 'then',    # Advanced Control
+    ]}
     """Keywords of the language"""
 
-    literals = [ '(', ')', '<', '>', '@', ':', ',' ]
+    literals = [ '(', ')', '=', '@', ':', ',' ]
     """Literals of the language"""
 
     tokens = [
@@ -49,32 +44,32 @@ class PLYLexerFacade:
     ] + list(keywords.values())
     """Lexer token types"""
 
-    t_ignore_COMMENT = r'\#.*'
+    t_ignore_COMMENT = r"\#.*"
     """Ignore (single line) comments (formatted as ``#...``)"""
 
-    @lex.Token(r'[a-zA-Z_][a-zA-Z_0-9]*')
+    @lex.Token(r"[a-zA-Z_][a-zA-Z_0-9]*")
     def t_IDENTIFIER(self, tok: lex.LexToken) -> lex.LexToken:
         tok.type = PLYLexerFacade.keywords.get(tok.value, 'IDENTIFIER')
         return tok
 
     #noinspection PyTypeChecker
-    @lex.Token(r'[0-9]+')
+    @lex.Token(r"[0-9]+")
     def t_INTEGER(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = int(tok.value, base=10)
         return tok
 
-    @lex.Token(r'\'[a-zA-Z0-9+\-*/^=&|~()[\]{}_#$%]{,3}\'')
+    @lex.Token(r"'(?a:[^\x00-\x1F\x7F\s\"']*)'")
     def t_SYMBOL(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = tok.value[1:-1]
         return tok
 
-    @lex.Token(r'(\r?\n)+')
+    @lex.Token(r"(\r?\n)+")
     def t_EOL(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = tok.value.count('\n')
         tok.lexer.lineno += tok.value
         return tok
 
-    @lex.Token(r'[ \t]+')
+    @lex.Token(r"[ \t]+")
     def t_WHITESPACE(self, tok: lex.LexToken) -> Optional[lex.LexToken]:
         if self._new_line:
             return tok
@@ -149,5 +144,4 @@ class PLYLexerFacade:
                 raise InvalidCharError.from_params(tok.value, tok.lineno, tok.colno)
 
         return tok
-
 

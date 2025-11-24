@@ -1,1 +1,3 @@
-machine  write     left      right     until     not       if        do        goto      accept    reject    halt
+machine
+write    left      right     until     accept    reject    halt
+not      if        do        goto

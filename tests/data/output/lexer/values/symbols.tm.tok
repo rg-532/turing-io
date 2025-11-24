@@ -5,7 +5,7 @@
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
     "creator": "test_lexer_exit_exc[values/symbols.tm]",
     "reason": "Fixture 'raw_expected_schema' on 'values/symbols.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/symbols.tm.tok')",
-    "timestamp": "2025-11-21T18:48:11.712428"
+    "timestamp": "2025-11-24T12:07:03.000674"
   },
   "project_version": "0.1.0",
   "schema_version": "1.2",
@@ -123,449 +123,246 @@
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "6",
-        "lineno": 3,
-        "colno": 1
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
         "value": "0",
         "lineno": 3,
-        "colno": 10
+        "colno": 1
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
         "value": "9",
         "lineno": 3,
-        "colno": 20
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "09",
-        "lineno": 3,
-        "colno": 30
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "623",
-        "lineno": 3,
-        "colno": 40
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "a5",
-        "lineno": 3,
-        "colno": 50
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "8B",
-        "lineno": 3,
-        "colno": 60
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "c7X",
-        "lineno": 3,
-        "colno": 70
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "31n",
-        "lineno": 3,
-        "colno": 80
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "a4b",
-        "lineno": 3,
-        "colno": 90
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "G12",
-        "lineno": 3,
-        "colno": 100
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "3ab",
-        "lineno": 3,
-        "colno": 110
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "EOL",
-        "value": 1,
-        "lineno": 3,
-        "colno": 115
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "+",
-        "lineno": 4,
-        "colno": 1
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "-",
-        "lineno": 4,
         "colno": 10
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "*",
-        "lineno": 4,
+        "value": "a1",
+        "lineno": 3,
         "colno": 20
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "/",
-        "lineno": 4,
+        "value": "2b",
+        "lineno": 3,
         "colno": 30
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "^",
-        "lineno": 4,
+        "value": "3C4",
+        "lineno": 3,
         "colno": 40
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "=",
-        "lineno": 4,
+        "value": "G5U",
+        "lineno": 3,
         "colno": 50
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "&",
-        "lineno": 4,
+        "value": "X78",
+        "lineno": 3,
         "colno": 60
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "|",
-        "lineno": 4,
+        "value": "0123",
+        "lineno": 3,
         "colno": 70
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "~",
-        "lineno": 4,
+        "value": "14C4",
+        "lineno": 3,
         "colno": 80
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "*+",
-        "lineno": 4,
-        "colno": 90
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "-~^",
-        "lineno": 4,
-        "colno": 100
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "++-",
-        "lineno": 4,
-        "colno": 110
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "EOL",
         "value": 1,
-        "lineno": 4,
-        "colno": 115
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "+6",
-        "lineno": 5,
-        "colno": 1
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "a-",
-        "lineno": 5,
-        "colno": 10
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "*a&",
-        "lineno": 5,
-        "colno": 20
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "|c~",
-        "lineno": 5,
-        "colno": 30
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "/^B",
-        "lineno": 5,
-        "colno": 40
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "b+a",
-        "lineno": 5,
-        "colno": 50
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "6==",
-        "lineno": 5,
-        "colno": 60
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "|Z|",
-        "lineno": 5,
-        "colno": 70
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "~c",
-        "lineno": 5,
-        "colno": 80
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "-=H",
-        "lineno": 5,
-        "colno": 90
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "b~",
-        "lineno": 5,
-        "colno": 100
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "x6+",
-        "lineno": 5,
-        "colno": 110
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "EOL",
-        "value": 1,
-        "lineno": 5,
-        "colno": 115
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "(",
-        "lineno": 6,
-        "colno": 1
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": ")",
-        "lineno": 6,
-        "colno": 10
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "[",
-        "lineno": 6,
-        "colno": 20
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "]",
-        "lineno": 6,
-        "colno": 30
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "{",
-        "lineno": 6,
-        "colno": 40
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "}",
-        "lineno": 6,
-        "colno": 50
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "(6",
-        "lineno": 6,
-        "colno": 60
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": ")+9",
-        "lineno": 6,
-        "colno": 70
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "B]+",
-        "lineno": 6,
-        "colno": 80
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "+{5",
-        "lineno": 6,
-        "colno": 90
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "o[",
-        "lineno": 6,
-        "colno": 100
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "9}(",
-        "lineno": 6,
-        "colno": 110
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "EOL",
-        "value": 1,
-        "lineno": 6,
-        "colno": 115
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "SYMBOL",
-        "value": "_",
-        "lineno": 7,
-        "colno": 1
+        "lineno": 3,
+        "colno": 86
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
         "value": "#",
-        "lineno": 7,
+        "lineno": 4,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "!",
+        "lineno": 4,
         "colno": 10
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "$",
-        "lineno": 7,
+        "value": "@",
+        "lineno": 4,
         "colno": 20
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "%",
-        "lineno": 7,
+        "value": "$%^&",
+        "lineno": 4,
         "colno": 30
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "{%",
-        "lineno": 7,
+        "value": "<>=",
+        "lineno": 4,
         "colno": 40
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "9_",
-        "lineno": 7,
+        "value": "&|~",
+        "lineno": 4,
         "colno": 50
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "_Z%",
-        "lineno": 7,
+        "value": "+-*/",
+        "lineno": 4,
         "colno": 60
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "(_]",
-        "lineno": 7,
+        "value": "4*5=20",
+        "lineno": 4,
         "colno": 70
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "$x9",
-        "lineno": 7,
+        "value": ">56",
+        "lineno": 4,
         "colno": 80
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "%#",
-        "lineno": 7,
+        "value": "X<=Y",
+        "lineno": 4,
         "colno": 90
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "#v_",
-        "lineno": 7,
+        "value": "T|F",
+        "lineno": 4,
         "colno": 100
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "SYMBOL",
-        "value": "x6%",
-        "lineno": 7,
+        "value": "~~g",
+        "lineno": 4,
+        "colno": 110
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 4,
+        "colno": 115
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "9#++",
+        "lineno": 5,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "++x",
+        "lineno": 5,
+        "colno": 10
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "5-A",
+        "lineno": 5,
+        "colno": 20
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "B/0",
+        "lineno": 5,
+        "colno": 30
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "#J$",
+        "lineno": 5,
+        "colno": 40
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "t^t",
+        "lineno": 5,
+        "colno": 50
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": ":;x\\Y",
+        "lineno": 5,
+        "colno": 60
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "@&.,",
+        "lineno": 5,
+        "colno": 70
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "[_]{6}",
+        "lineno": 5,
+        "colno": 80
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "_R~``",
+        "lineno": 5,
+        "colno": 90
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "Z_a_1",
+        "lineno": 5,
+        "colno": 100
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "__v__",
+        "lineno": 5,
         "colno": 110
       }
     ],

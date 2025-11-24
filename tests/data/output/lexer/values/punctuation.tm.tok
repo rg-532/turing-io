@@ -3,9 +3,9 @@
   "file_type": "TokenFileSchema",
   "origin": {
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
-    "creator": "test_lexer_valid[basic/punctuation.tm]",
-    "reason": "Fixture 'raw_expected_schema' on 'basic/punctuation.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/basic/punctuation.tm.tok')",
-    "timestamp": "2025-11-09T16:49:38.544198"
+    "creator": "test_lexer_exit_exc[values/punctuation.tm]",
+    "reason": "Fixture 'raw_expected_schema' on 'values/punctuation.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/punctuation.tm.tok')",
+    "timestamp": "2025-11-23T21:37:40.440604"
   },
   "project_version": "0.1.0",
   "schema_version": "1.2",
@@ -31,38 +31,31 @@
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "<",
+        "typ": "@",
         "value": null,
         "lineno": 1,
         "colno": 3
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": ">",
+        "typ": ":",
         "value": null,
         "lineno": 1,
         "colno": 4
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "@",
+        "typ": ",",
         "value": null,
         "lineno": 1,
         "colno": 5
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": ":",
+        "typ": "=",
         "value": null,
         "lineno": 1,
         "colno": 6
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": ",",
-        "value": null,
-        "lineno": 1,
-        "colno": 7
       }
     ],
     "exit_exc": null

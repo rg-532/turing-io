@@ -3,8 +3,8 @@
   "file_type": "TokenFileSchema",
   "origin": {
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
-    "creator": "test_lexer_exit_exc[values/keywords.tm]",
-    "reason": "Fixture 'raw_expected_schema' on 'values/keywords.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/keywords.tm.tok')",
+    "creator": "test_lexer_exit_exc[values/keywords_2.tm]",
+    "reason": "Fixture 'raw_expected_schema' on 'values/keywords_2.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/keywords_2.tm.tok')",
     "timestamp": "2025-11-23T21:34:08.189665"
   },
   "project_version": "0.1.0",
@@ -17,101 +17,108 @@
     "tokens": [
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "MACHINE",
+        "typ": "TAPE",
         "value": null,
         "lineno": 1,
         "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "REGISTER",
+        "value": null,
+        "lineno": 1,
+        "colno": 10
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "EOL",
         "value": 1,
         "lineno": 1,
-        "colno": 8
+        "colno": 18
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "WRITE",
+        "typ": "ON",
         "value": null,
         "lineno": 2,
         "colno": 1
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "LEFT",
+        "typ": "IS",
         "value": null,
         "lineno": 2,
         "colno": 10
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "RIGHT",
+        "typ": "AND",
         "value": null,
         "lineno": 2,
         "colno": 20
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "UNTIL",
+        "typ": "OR",
         "value": null,
         "lineno": 2,
         "colno": 30
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "ACCEPT",
-        "value": null,
+        "typ": "EOL",
+        "value": 1,
         "lineno": 2,
+        "colno": 32
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "ELSE",
+        "value": null,
+        "lineno": 3,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "ELIF",
+        "value": null,
+        "lineno": 3,
+        "colno": 10
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "WHILE",
+        "value": null,
+        "lineno": 3,
+        "colno": 20
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "FOR",
+        "value": null,
+        "lineno": 3,
+        "colno": 30
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "BREAK",
+        "value": null,
+        "lineno": 3,
         "colno": 40
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "REJECT",
+        "typ": "CONTINUE",
         "value": null,
-        "lineno": 2,
+        "lineno": 3,
         "colno": 50
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "HALT",
+        "typ": "THEN",
         "value": null,
-        "lineno": 2,
+        "lineno": 3,
         "colno": 60
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "EOL",
-        "value": 1,
-        "lineno": 2,
-        "colno": 64
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "NOT",
-        "value": null,
-        "lineno": 3,
-        "colno": 1
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "IF",
-        "value": null,
-        "lineno": 3,
-        "colno": 10
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "DO",
-        "value": null,
-        "lineno": 3,
-        "colno": 20
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "GOTO",
-        "value": null,
-        "lineno": 3,
-        "colno": 30
       }
     ],
     "exit_exc": null
