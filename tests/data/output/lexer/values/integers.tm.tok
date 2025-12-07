@@ -3,9 +3,9 @@
   "file_type": "TokenFileSchema",
   "origin": {
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
-    "creator": "test_lexer_valid[basic/integers.tm]",
-    "reason": "Fixture 'raw_expected_schema' on 'basic/integers.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/basic/integers.tm.tok')",
-    "timestamp": "2025-11-09T16:49:38.544198"
+    "creator": "test_lexer_exit_exc[values/integers.tm]",
+    "reason": "Fixture 'raw_expected_schema' on 'values/integers.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/integers.tm.tok')",
+    "timestamp": "2025-12-05T21:32:53.468948"
   },
   "project_version": "0.1.0",
   "schema_version": "1.2",
@@ -77,6 +77,13 @@
         "value": 32132387120983781290732198073210987319084730295871032985713409137809378098209812,
         "lineno": 2,
         "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 0,
+        "lineno": 2,
+        "colno": 82
       }
     ],
     "exit_exc": null

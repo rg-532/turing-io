@@ -1,4 +1,4 @@
-"""This module holds the definition of the ``TestToken`` class, which is constructible from ``ply.lex.Token``
+"""This module holds the definition of the ``LexerToken`` class, which is constructible from ``ply.lex.Token``
 instances and adds on top of them some utilities useful for testing.
 """
 from __future__ import annotations
@@ -9,7 +9,7 @@ import copy
 
 from ply.lex import LexToken as PLYToken
 
-from compiler.frontend.lexer.ply_lexer import PLYLexerFacade
+from compiler.frontend.lexer.ply_impl.ply_lexer import PLYLexerFacade
 from compiler.utils.string import SafeMapping, normal_str_to_raw
 
 
@@ -31,10 +31,10 @@ class LexerToken(object):
     )
     """Defines the types of objects which have no value"""
 
-    typ:    Optional[str]
-    value:  Any
+    typ: Optional[str]
+    value: Any
     lineno: Optional[int]
-    colno:  Optional[int]
+    colno: Optional[int]
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, LexerToken):
@@ -51,7 +51,7 @@ class LexerToken(object):
     def to_formatted_string(self, template: str = "{typ} ({value})  pos=({lineno}, {colno})") -> str:
         """Returns a string representing the token with format ``template``.
 
-        Uses ``SafeMapping``, so if the provided ``template`` has some field that does not exist in ``TestToken``,
+        Uses ``SafeMapping``, so if the provided ``template`` has some field that does not exist in ``LexerToken``,
         this field is left as is (with surrounding braces).
 
         :param template:    Template to format the resulting string by.
@@ -72,7 +72,7 @@ class LexerToken(object):
 
     @staticmethod
     def from_tok(tok: PLYToken | LexerToken) -> LexerToken:
-        """Static method to initialize a ``TestToken`` from a ``ply.lex.LexToken`` instance or another ``TestToken``
+        """Static method to initialize a ``LexerToken`` from a ``ply.lex.LexToken`` instance or another ``LexerToken``
         instance.
 
         If a ``ply.lex.LexToken`` instance is provided, this method accesses its attributes in a safe manner, setting
@@ -82,10 +82,10 @@ class LexerToken(object):
         received token a keyword, literal, WHITESPACE, INDENT or DEDENT, the value is set to ``None``. This is done
         to avoid comparisons of values that do not matter.
 
-        If a ``TestToken`` instance is provided instead, this method simply makes a deep copy of the token.
+        If a ``LexerToken`` instance is provided instead, this method simply makes a deep copy of the token.
 
-        :param tok: Token to initialize a ``TestToken`` instance from.
-        :return:    A new ``TestToken`` instance.
+        :param tok: Token to initialize a ``LexerToken`` instance from.
+        :return:    A new ``LexerToken`` instance.
         """
         if isinstance(tok, LexerToken):
             return copy.deepcopy(tok)

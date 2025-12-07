@@ -5,7 +5,7 @@
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
     "creator": "test_lexer_exit_exc[values/keywords_2.tm]",
     "reason": "Fixture 'raw_expected_schema' on 'values/keywords_2.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/keywords_2.tm.tok')",
-    "timestamp": "2025-11-23T21:34:08.189665"
+    "timestamp": "2025-12-05T21:32:53.468948"
   },
   "project_version": "0.1.0",
   "schema_version": "1.2",
@@ -119,6 +119,13 @@
         "value": null,
         "lineno": 3,
         "colno": 60
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 0,
+        "lineno": 3,
+        "colno": 65
       }
     ],
     "exit_exc": null

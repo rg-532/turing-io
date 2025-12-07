@@ -251,7 +251,59 @@ parametrization, and some utilities:
   compute values from the testing metadata file. This was implemented because of how `pytest`
   works - mainly that it **collects tests first, and evaluates fixtures only when they're 
   needed**, hence there cannot be a fixture that reads the file and leads to parametrization.
+    
+
+## November 26th, 2025
+### Compiler/Lexer
+Refactored the implementation of the Lexer because of the following issue - I wanted to add
+logic to process `EOL` tokens as well, and realized that adding it to the current `TMLexer`,
+which already has a lot of logic to transform `WHITESPACE` into `INDENT/DEDENT` tokens will
+be complicated and lead to low maintainability.
+
+I decided to go with the following design, which resembles the `Decorator` or `Chain of
+responsibility` patterns operate (Though not exactly):
+- Defined a base lexer interface which any operational lexer should implement. Added that
+  as a base class of the `PLY` lexer implementation.<br><br>
+- Defined a lexer wrapper base class, which wraps a base lexer and alters its behaviour.
+  - This wrapper receives tokens from the wrapped lexer, processes them and generates its
+    own output token stream.
+    - The wrapper does this by inserting all tokens from processing into some output queue.
+  - To solve issues that can be caused by utilizing lookahead, an additional input queue is
+    used. Unlike the output queue, tokens fetched from this queue undergo processing.
+  - More precisely, the flow is as follows:
   
+        1 If the output queue is not empty, pop and return a token from it.
+        2 Otherwise:
+            2.1 If the input queue is not empty, pop a token from it and process it.
+            2.2 Otherwise, request the next token from the wrapped lexer and process it.
+            2.3 Return to step 1.
+
+- Finally, defined concrete wrappers and a builder method to assemble them into the final 
+  lexer.
+
+Initially, I went with a design that had the output queue only, because it allowed for complex
+mapping schemes to be implemented by the processing logic, but then I realized there was a problem
+with utilizing lookahead.
+
+If I need to use a lookahead token to insert some token before it (For
+example, if I wanted to ensure there is some `EOL` token before the terminating `None`), I could
+end up inserting the entire wrapped lexer's token stream into the queue, which does not encapsulate
+the memory efficient approach of the initial design.
+
+There were some ways to address this issue:
+- Ensure that there is no `EOL` token before `None` first, and then re-add it, but that introduces
+  coupling between wrappers.
+- Make it so the output queue becomes an input queue, but then deciding what needs to be outputted
+  became an issue, as both stream undergo processing, and I wanted that to be able to skip tokens.
+  - One way to combat this is to make the processing logic return a number of tokens to be output
+    from the queue, having the next one undergo processing (This feels clunky).
+  - Alternatively, the processing logic can return the next token to output, but that makes managing
+    the queue more complex, and skipping tokens becomes tricky.
+
+The realization that tokens retrieved for processing sometimes need to undergo additional processing
+(common in lookahead utilization) but sometimes not lead me to utilize a dual-queue approach, which
+also helped remove unnecessary calls to the processing logic, and allows for (future) refactory which
+would reduce the number of calls to process even further (by defining the processed token types).
 
 
 

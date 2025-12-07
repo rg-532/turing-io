@@ -1,12 +1,15 @@
-from typing import Optional, Tuple
+"""This module defines a ``PLY`` lexer class.
+"""
+from typing import Optional
 
 from ply import lex
 
+from compiler.frontend.lexer.base_lexer import BaseLexer
 from compiler.frontend.lexer.errors import InvalidCharError
 
 
 # noinspection PyPep8Naming
-class PLYLexerFacade:
+class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
     """Allows for a single point of integration with PLY's Lexer object.
         - Defines a specification of a PLY Lexer.
         - Implements column tracking, as was done in the docs.
@@ -34,11 +37,13 @@ class PLYLexerFacade:
     """Literals of the language"""
 
     tokens = [
+        # Basic tokens:
         'IDENTIFIER',
         'INTEGER',
         'SYMBOL',
         'EOL',
-        'WHITESPACE',       # Whitespace
+        'WHITESPACE',
+        # Tokens that are generated in the pipeline (for ``PLY`` parsers):
         'INDENT',
         'DEDENT',
     ] + list(keywords.values())
@@ -89,6 +94,7 @@ class PLYLexerFacade:
     def __init__(self) -> None:
         self.ply_lexer: Optional[lex.Lexer] = None
 
+        # Column tracking + whitespace filtration:
         self._new_line: Optional[bool] = None
         self._line_lexpos: Optional[int] = None
 
@@ -102,38 +108,16 @@ class PLYLexerFacade:
 
         tok.colno = tok.lexpos - self._line_lexpos + 1
 
-    def get_current_position(self) -> Tuple[int, int]:
-        """Returns the internal ``ply_lexer`` positioning (line, column).
-
-        :return: Tuple containing line number and column number.
-        """
-        lineno: int = self.ply_lexer.lineno
-        colno: int = self.ply_lexer.lexpos - self._line_lexpos + 1
-
-        return lineno, colno
-
     def input(self, text: str) -> None:
-        """Wraps ``self.ply_lexer.input(text)``.
-
-        Initializes the internal Lexer object, as well as parameters for column tracking.
-
-        :param text:    Text to scan with the Lexer object.
-        """
         if not self.ply_lexer:
             self.ply_lexer = lex.lex(module=self)
 
-        self._new_line: bool = True
+        self._new_line = True
         self._line_lexpos = self.ply_lexer.lexpos
 
         return self.ply_lexer.input(text)
 
     def token(self) -> Optional[lex.LexToken]:
-        """Wraps ``self.ply_lexer.token()`` and adds column tracking.
-
-        Returns the next token, or ``None`` if no next token exists.
-
-        :return:    Next token with its ``colno`` attribute set.
-        """
         tok: lex.LexToken = self.ply_lexer.token()
 
         if tok is not None:
@@ -142,6 +126,20 @@ class PLYLexerFacade:
 
             if tok.type == "_ERR_INVALID_CHAR":
                 raise InvalidCharError.from_params(tok.value, tok.lineno, tok.colno)
+
+        return tok
+
+    def is_terminal_token(self, tok: Optional[lex.LexToken]) -> bool:
+        return tok is None
+
+    def get_pos_as_token(self) -> lex.LexToken:
+        tok = lex.LexToken()
+
+        tok.type = tok.value = None
+        tok.lineno = self.ply_lexer.lineno
+        tok.lexpos = self.ply_lexer.lexpos
+        self._set_token_colno(tok)
+        tok.lexer = self.ply_lexer
 
         return tok
 

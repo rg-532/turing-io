@@ -3,9 +3,9 @@
   "file_type": "TokenFileSchema",
   "origin": {
     "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
-    "creator": "test_lexer_exit_exc[values/keywords.tm]",
-    "reason": "Fixture 'raw_expected_schema' on 'values/keywords.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/values/keywords.tm.tok')",
-    "timestamp": "2025-12-05T21:32:53.468948"
+    "creator": "test_lexer_exit_exc[indent/errors/inconsistent_indent_err.tm]",
+    "reason": "Fixture 'raw_expected_schema' on 'indent/errors/inconsistent_indent_err.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/indent/errors/inconsistent_indent_err.tm.tok')",
+    "timestamp": "2025-12-05T22:20:21.086275"
   },
   "project_version": "0.1.0",
   "schema_version": "1.2",
@@ -24,103 +24,122 @@
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "bad_indent",
+        "lineno": 1,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 1,
+        "colno": 19
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "EOL",
         "value": 1,
         "lineno": 1,
-        "colno": 8
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "WRITE",
-        "value": null,
-        "lineno": 2,
-        "colno": 1
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "LEFT",
-        "value": null,
-        "lineno": 2,
-        "colno": 10
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "RIGHT",
-        "value": null,
-        "lineno": 2,
         "colno": 20
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "UNTIL",
+        "typ": "INDENT",
         "value": null,
         "lineno": 2,
-        "colno": 30
+        "colno": 1
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "ACCEPT",
-        "value": null,
+        "typ": "IDENTIFIER",
+        "value": "call_me",
         "lineno": 2,
-        "colno": 40
+        "colno": 5
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "REJECT",
-        "value": null,
+        "typ": "INTEGER",
+        "value": 3,
         "lineno": 2,
-        "colno": 50
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "HALT",
-        "value": null,
-        "lineno": 2,
-        "colno": 60
+        "colno": 13
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "EOL",
         "value": 1,
         "lineno": 2,
-        "colno": 64
-      },
-      {
-        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "NOT",
-        "value": null,
-        "lineno": 3,
-        "colno": 1
+        "colno": 14
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "IF",
         "value": null,
         "lineno": 3,
-        "colno": 10
+        "colno": 5
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "5",
+        "lineno": 3,
+        "colno": 8
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "DO",
         "value": null,
         "lineno": 3,
-        "colno": 20
+        "colno": 12
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
-        "typ": "GOTO",
+        "typ": ":",
         "value": null,
         "lineno": 3,
-        "colno": 30
+        "colno": 14
       },
       {
         "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
         "typ": "EOL",
-        "value": 0,
+        "value": 1,
         "lineno": 3,
-        "colno": 35
+        "colno": 15
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 4,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "stuff",
+        "lineno": 4,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 4,
+        "colno": 14
       }
     ],
-    "exit_exc": null
+    "exit_exc": {
+      "py/reduce": [
+        {
+          "py/type": "compiler.frontend.lexer.errors.InconsistentIndentationError"
+        },
+        {
+          "py/tuple": [
+            "Got indentation of 6 (line 5), but closest previous level has indentation of 4 (line 2)."
+          ]
+        },
+        {}
+      ]
+    }
   }
 }

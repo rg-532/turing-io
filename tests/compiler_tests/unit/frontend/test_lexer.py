@@ -13,11 +13,11 @@ import os.path
 from typing import List, Optional, Tuple
 
 import pytest
+from ply import lex
 
-from compiler.frontend.lexer import TMLexer
-from compiler.frontend.lexer.errors import LexerError
+from compiler.frontend.lexer import build_lexer, BaseLexer, LexerError
+
 from compiler_tests.utils.metadata import lazy_metadata
-
 from compiler_tests.utils.objects.tokens import LexerToken
 from compiler_tests.utils.files import (
     TextFileManager, GoldenFileManager,
@@ -26,7 +26,7 @@ from compiler_tests.utils.files import (
 
 
 _metadata = lazy_metadata("metadata/lexer.json")
-"""Metadata file from `[root]/tests/data/`"""
+"""Metadata file from ``[root]/tests/data/``"""
 
 @pytest.fixture(scope="module")
 def input_reader() -> TextFileManager:
@@ -36,21 +36,22 @@ def input_reader() -> TextFileManager:
 def output_manager() -> GoldenFileManager[TokenFileSchema]:
     return GoldenFileManager(_metadata.output_dir)
 
-@pytest.fixture
-def lexer() -> TMLexer:
-    return TMLexer()
+@pytest.fixture(scope="class")
+def lexer(input_relpath) -> BaseLexer[Optional[lex.LexToken]]:
+    """Fixture ``input_relpath`` is here to **force** lexer recreation."""
+    return build_lexer()
 
 
-@pytest.fixture(params=_metadata.input_paths)
+@pytest.fixture(scope="class", params=_metadata.input_paths)
 def input_relpath(request) -> str:
     return request.param
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def input_data(input_reader, input_relpath) -> str:
     """Assumes file ``{input_mgr.dirpath}/{input_relpath}`` exists."""
     return input_reader.read(input_relpath)
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerError]]:
     """Captures scanned tokens and exit exception if occurred."""
     tokens: List[LexerToken] = []
@@ -64,25 +65,25 @@ def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerErr
 
     return tokens, exit_exc
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def lexer_tokens(lexer_output) -> List[LexerToken]:
     return lexer_output[0]
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def lexer_exit_exc(lexer_output) -> Optional[LexerError]:
     return lexer_output[1]
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def expected_relpath(input_relpath) -> str:
     return f"{input_relpath}.tok"
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def golden_relpath(expected_relpath) -> str:
     dirpath, filename = os.path.split(expected_relpath)
     return os.path.join(dirpath, ".golden/", filename)
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def raw_expected_schema(output_manager, expected_relpath, request) -> TokenFileSchema:
     """Returns the expected output's schema or an exception thrown when reading."""
     schema, cause = output_manager.safe_read(expected_relpath)
@@ -103,7 +104,7 @@ def raw_expected_schema(output_manager, expected_relpath, request) -> TokenFileS
     return schema
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def checked_expected_schema(raw_expected_schema) -> TokenFileSchema:
     read_version = raw_expected_schema.schema_version
     current_version = TokenFileSchema.schema_version
@@ -113,20 +114,23 @@ def checked_expected_schema(raw_expected_schema) -> TokenFileSchema:
 
     return raw_expected_schema
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def expected_tokens(checked_expected_schema) -> List[LexerToken]:
     return list(checked_expected_schema.data.tokens)
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def expected_exit_exc(checked_expected_schema) -> Optional[LexerError]:
     return checked_expected_schema.data.exit_exc
 
 
-def test_lexer_tokens(lexer_tokens, expected_tokens):
-    assert lexer_tokens == expected_tokens
+class TestLexerWithRecreation(object):
+    """Defines basic input/output testing with the lexer object being recreated for each input.
+    """
+    def test_lexer_tokens(self, lexer_tokens, expected_tokens):
+        assert lexer_tokens == expected_tokens
 
-def test_lexer_exit_exc(lexer_exit_exc, expected_exit_exc):
-    assert lexer_exit_exc == expected_exit_exc
+    def test_lexer_exit_exc(self, lexer_exit_exc, expected_exit_exc):
+        assert lexer_exit_exc == expected_exit_exc
 
 
 
