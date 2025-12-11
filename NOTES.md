@@ -1,6 +1,24 @@
 # Notes
 
 ## Future Ideas
+### File Traceability
+A suggestion I have received was to include the input files which caused generation of output files
+as metadata, so source files could be traced. The issue here is that some output files may be tied
+to multiple inputs and in different ways, so more thought is needed regarding how to properly track
+this in a flexible way.
+
+Since this is a future idea, it will incur **version updates** of involved schemas (and potentially
+migrations).
+
+
+### Golden File Management w/ Pytest Flags
+It is possible to add flags to `pytest` invocation through a terminal. An old suggestion I received
+was to add a flag to remake golden files, which makes sense in a scenario where the golden file
+metadata is outdated.
+
+This, however, is not super necessary yet.
+
+
 ### Data Migrator Refactory
 A tool for data migration of golden files has been implemented, but the implementation is frail
 (doesn't feel very maintainable) and may need refactory.
@@ -37,16 +55,6 @@ Suggestion - Change the current scheme in the following way:
 This approach removes confusion occurring when both `files` are specified and `scan` appears
 before `migrate`, while exposing all desired APIs. Duplication will be handled through the refactory
 of `ops`.
-
-
-### File Traceability
-A suggestion I have received was to include the input files which caused generation of output files
-as metadata, so source files could be traced. The issue here is that some output files may be tied
-to multiple inputs and in different ways, so more thought is needed regarding how to properly track
-this in a flexible way.
-
-Since this is a future idea, it will incur **version updates** of involved schemas (and potentially
-migrations).
 
 
 ### JSON Files as Schema

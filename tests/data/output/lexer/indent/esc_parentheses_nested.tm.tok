@@ -1,0 +1,217 @@
+{
+  "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileSchema",
+  "file_type": "TokenFileSchema",
+  "origin": {
+    "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
+    "creator": "TestLexerWithRecreation",
+    "reason": "Fixture 'raw_expected_schema' on 'indent/esc_parentheses_nested.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/indent/esc_parentheses_nested.tm.tok')",
+    "timestamp": "2025-12-11T20:37:11.145474"
+  },
+  "project_version": "0.1.0",
+  "schema_version": "1.2",
+  "metadata": {
+    "py/object": "compiler_tests.utils.files.schemas.base_schema.EmptySchema"
+  },
+  "data": {
+    "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileDataSchema",
+    "tokens": [
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "MACHINE",
+        "value": null,
+        "lineno": 1,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "space_indented",
+        "lineno": 1,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 1,
+        "colno": 23
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 1,
+        "colno": 24
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 2,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "call_bar",
+        "lineno": 2,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "(",
+        "value": null,
+        "lineno": 2,
+        "colno": 12
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "a",
+        "lineno": 3,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 3,
+        "colno": 4
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "b",
+        "lineno": 3,
+        "colno": 6
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 3,
+        "colno": 7
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "c",
+        "lineno": 4,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 4,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "d",
+        "lineno": 5,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 5,
+        "colno": 4
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "(",
+        "value": null,
+        "lineno": 6,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "oh_no",
+        "lineno": 6,
+        "colno": 5
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 6,
+        "colno": 10
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "this_is_bad",
+        "lineno": 7,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 7,
+        "colno": 14
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "real_bad",
+        "lineno": 8,
+        "colno": 7
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ")",
+        "value": null,
+        "lineno": 8,
+        "colno": 15
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 9,
+        "colno": 8
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ")",
+        "value": null,
+        "lineno": 9,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 9,
+        "colno": 10
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "HALT",
+        "value": null,
+        "lineno": 10,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 0,
+        "lineno": 10,
+        "colno": 8
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DEDENT",
+        "value": null,
+        "lineno": 10,
+        "colno": 8
+      }
+    ],
+    "exit_exc": null
+  }
+}

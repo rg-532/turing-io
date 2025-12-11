@@ -1,0 +1,420 @@
+{
+  "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileSchema",
+  "file_type": "TokenFileSchema",
+  "origin": {
+    "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
+    "creator": "TestLexerWithRecreation",
+    "reason": "Fixture 'raw_expected_schema' on 'samples/symsets.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/samples/symsets.tm.tok')",
+    "timestamp": "2025-12-11T20:46:04.725534"
+  },
+  "project_version": "0.1.0",
+  "schema_version": "1.2",
+  "metadata": {
+    "py/object": "compiler_tests.utils.files.schemas.base_schema.EmptySchema"
+  },
+  "data": {
+    "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileDataSchema",
+    "tokens": [
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "MACHINE",
+        "value": null,
+        "lineno": 1,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "symbol_sets",
+        "lineno": 1,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 1,
+        "colno": 20
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 1,
+        "colno": 21
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 2,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IF",
+        "value": null,
+        "lineno": 2,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "(",
+        "value": null,
+        "lineno": 2,
+        "colno": 5
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "a",
+        "lineno": 2,
+        "colno": 6
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 2,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "b",
+        "lineno": 2,
+        "colno": 10
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 2,
+        "colno": 13
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "c",
+        "lineno": 2,
+        "colno": 14
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 2,
+        "colno": 17
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ")",
+        "value": null,
+        "lineno": 2,
+        "colno": 18
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DO",
+        "value": null,
+        "lineno": 2,
+        "colno": 20
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 2,
+        "colno": 22
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 2,
+        "colno": 23
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 3,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "WRITE",
+        "value": null,
+        "lineno": 3,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "x",
+        "lineno": 3,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 3,
+        "colno": 12
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DEDENT",
+        "value": null,
+        "lineno": 4,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "ELIF",
+        "value": null,
+        "lineno": 4,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "(",
+        "value": null,
+        "lineno": 4,
+        "colno": 7
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "d",
+        "lineno": 4,
+        "colno": 8
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 4,
+        "colno": 11
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "e",
+        "lineno": 4,
+        "colno": 13
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 4,
+        "colno": 16
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "f",
+        "lineno": 4,
+        "colno": 18
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ")",
+        "value": null,
+        "lineno": 4,
+        "colno": 21
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DO",
+        "value": null,
+        "lineno": 4,
+        "colno": 23
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 4,
+        "colno": 25
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 4,
+        "colno": 26
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 5,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "WRITE",
+        "value": null,
+        "lineno": 5,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "y",
+        "lineno": 5,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 5,
+        "colno": 12
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DEDENT",
+        "value": null,
+        "lineno": 6,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "ELIF",
+        "value": null,
+        "lineno": 6,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "(",
+        "value": null,
+        "lineno": 6,
+        "colno": 7
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "sym_1",
+        "lineno": 6,
+        "colno": 8
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 6,
+        "colno": 15
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "sym_iden_2",
+        "lineno": 7,
+        "colno": 5
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ",",
+        "value": null,
+        "lineno": 7,
+        "colno": 15
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "call",
+        "lineno": 8,
+        "colno": 5
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ")",
+        "value": null,
+        "lineno": 9,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DO",
+        "value": null,
+        "lineno": 9,
+        "colno": 4
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 9,
+        "colno": 6
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 9,
+        "colno": 7
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 10,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "WRITE",
+        "value": null,
+        "lineno": 10,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "z",
+        "lineno": 10,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 10,
+        "colno": 12
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DEDENT",
+        "value": null,
+        "lineno": 11,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "HALT",
+        "value": null,
+        "lineno": 11,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 0,
+        "lineno": 11,
+        "colno": 7
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DEDENT",
+        "value": null,
+        "lineno": 11,
+        "colno": 7
+      }
+    ],
+    "exit_exc": null
+  }
+}

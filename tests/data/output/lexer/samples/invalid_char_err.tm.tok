@@ -1,0 +1,124 @@
+{
+  "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileSchema",
+  "file_type": "TokenFileSchema",
+  "origin": {
+    "py/object": "compiler_tests.utils.files.schemas.golden_schema.GoldenFileOriginSchema",
+    "creator": "TestLexerWithRecreation",
+    "reason": "Fixture 'raw_expected_schema' on 'samples/invalid_char_err.tm.tok' got (FileNotFoundError: No such file '/home/rg/Projects/turing-io/tests/data/output/lexer/samples/invalid_char_err.tm.tok')",
+    "timestamp": "2025-12-11T20:51:26.629343"
+  },
+  "project_version": "0.1.0",
+  "schema_version": "1.2",
+  "metadata": {
+    "py/object": "compiler_tests.utils.files.schemas.base_schema.EmptySchema"
+  },
+  "data": {
+    "py/object": "compiler_tests.utils.files.schemas.token_schema.TokenFileDataSchema",
+    "tokens": [
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "MACHINE",
+        "value": null,
+        "lineno": 1,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "invalid_char",
+        "lineno": 1,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 1,
+        "colno": 21
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 1,
+        "colno": 22
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 2,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IF",
+        "value": null,
+        "lineno": 2,
+        "colno": 2
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "SYMBOL",
+        "value": "a",
+        "lineno": 2,
+        "colno": 5
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "DO",
+        "value": null,
+        "lineno": 2,
+        "colno": 9
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": ":",
+        "value": null,
+        "lineno": 2,
+        "colno": 11
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "EOL",
+        "value": 1,
+        "lineno": 2,
+        "colno": 12
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "INDENT",
+        "value": null,
+        "lineno": 3,
+        "colno": 1
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "call",
+        "lineno": 3,
+        "colno": 3
+      },
+      {
+        "py/object": "compiler_tests.utils.objects.tokens.LexerToken",
+        "typ": "IDENTIFIER",
+        "value": "b",
+        "lineno": 3,
+        "colno": 8
+      }
+    ],
+    "exit_exc": {
+      "py/reduce": [
+        {
+          "py/type": "compiler.frontend.lexer.errors.InvalidCharError"
+        },
+        {
+          "py/tuple": [
+            "Could not tokenize character '`' (line 3 column 9)."
+          ]
+        },
+        {}
+      ]
+    }
+  }
+}
