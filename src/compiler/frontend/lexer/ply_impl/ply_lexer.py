@@ -52,29 +52,29 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
     t_ignore_COMMENT = r"\#.*"
     """Ignore (single line) comments (formatted as ``#...``)"""
 
-    @lex.Token(r"[a-zA-Z_][a-zA-Z_0-9]*")
+    @lex.Token(r"[a-zA-Z_][a-zA-Z_0-9]*")           # type: ignore[misc]
     def t_IDENTIFIER(self, tok: lex.LexToken) -> lex.LexToken:
         tok.type = PLYLexerFacade.keywords.get(tok.value, 'IDENTIFIER')
         return tok
 
     #noinspection PyTypeChecker
-    @lex.Token(r"[0-9]+")
+    @lex.Token(r"[0-9]+")                           # type: ignore[misc]
     def t_INTEGER(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = int(tok.value, base=10)
         return tok
 
-    @lex.Token(r"'(?a:[^\x00-\x1F\x7F\s\"']*)'")
+    @lex.Token(r"'(?a:[^\x00-\x1F\x7F\s\"']*)'")    # type: ignore[misc]
     def t_SYMBOL(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = tok.value[1:-1]
         return tok
 
-    @lex.Token(r"(\r?\n)+")
+    @lex.Token(r"(\r?\n)+")                         # type: ignore[misc]
     def t_EOL(self, tok: lex.LexToken) -> lex.LexToken:
         tok.value = tok.value.count('\n')
         tok.lexer.lineno += tok.value
         return tok
 
-    @lex.Token(r"[ \t]+")
+    @lex.Token(r"[ \t]+")                           # type: ignore[misc]
     def t_WHITESPACE(self, tok: lex.LexToken) -> Optional[lex.LexToken]:
         if self._new_line:
             return tok
@@ -82,7 +82,7 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
         return None
 
     #noinspection PyMethodMayBeStatic
-    def t_error(self, tok) -> lex.LexToken:
+    def t_error(self, tok: lex.LexToken) -> lex.LexToken:
         tok.type = "_ERR_INVALID_CHAR"
         tok.value = tok.value[0]
 
@@ -108,16 +108,19 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
 
         tok.colno = tok.lexpos - self._line_lexpos + 1
 
-    def input(self, text: str) -> None:
-        if not self.ply_lexer:
+    def input(self, text: str, reset: bool = True) -> None:
+        if reset or not self.ply_lexer:
             self.ply_lexer = lex.lex(module=self)
 
         self._new_line = True
         self._line_lexpos = self.ply_lexer.lexpos
 
-        return self.ply_lexer.input(text)
+        self.ply_lexer.input(text)
 
     def token(self) -> Optional[lex.LexToken]:
+        if self.ply_lexer is None:
+            return None     # Assume empty input
+
         tok: lex.LexToken = self.ply_lexer.token()
 
         if tok is not None:
@@ -132,12 +135,17 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
     def is_terminal_token(self, tok: Optional[lex.LexToken]) -> bool:
         return tok is None
 
-    def get_pos_as_token(self) -> lex.LexToken:
+    def get_pos_as_token(self) -> lex.LexToken:  # TODO - check for input call here
         tok = lex.LexToken()
 
         tok.type = tok.value = None
-        tok.lineno = self.ply_lexer.lineno
-        tok.lexpos = self.ply_lexer.lexpos
+
+        if not self.ply_lexer:
+            tok.lineno = tok.lexpos = 0     # Assume empty input
+        else:
+            tok.lineno = self.ply_lexer.lineno
+            tok.lexpos = self.ply_lexer.lexpos
+
         self._set_token_colno(tok)
         tok.lexer = self.ply_lexer
 

@@ -60,13 +60,15 @@ target-version = ["py312"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
-
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+mypy_path = "/src, /tests, /tools"
 
 [[tool.mypy.overrides]]
 module = ["ply.*"]
 ignore_missing_imports = true
 check_untyped_defs = false
 implicit_reexport = true
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

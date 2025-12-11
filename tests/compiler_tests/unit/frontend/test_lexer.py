@@ -15,7 +15,7 @@ from typing import List, Optional, Tuple
 import pytest
 from ply import lex
 
-from compiler.frontend.lexer import build_lexer, BaseLexer, LexerError
+from compiler.frontend.lexer import build_lexer, BaseLexer, LexerInputError
 
 from compiler_tests.utils.metadata import lazy_metadata
 from compiler_tests.utils.objects.tokens import LexerToken
@@ -52,15 +52,15 @@ def input_data(input_reader, input_relpath) -> str:
     return input_reader.read(input_relpath)
 
 @pytest.fixture(scope="class")
-def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerError]]:
+def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerInputError]]:
     """Captures scanned tokens and exit exception if occurred."""
     tokens: List[LexerToken] = []
-    exit_exc: Optional[LexerError] = None
+    exit_exc: Optional[LexerInputError] = None
 
     try:
         for tok in lexer.tokenize(input_data):
             tokens.append(LexerToken.from_tok(tok))
-    except LexerError as exc:
+    except LexerInputError as exc:
         exit_exc = exc
 
     return tokens, exit_exc
@@ -70,7 +70,7 @@ def lexer_tokens(lexer_output) -> List[LexerToken]:
     return lexer_output[0]
 
 @pytest.fixture(scope="class")
-def lexer_exit_exc(lexer_output) -> Optional[LexerError]:
+def lexer_exit_exc(lexer_output) -> Optional[LexerInputError]:
     return lexer_output[1]
 
 
@@ -119,7 +119,7 @@ def expected_tokens(checked_expected_schema) -> List[LexerToken]:
     return list(checked_expected_schema.data.tokens)
 
 @pytest.fixture(scope="class")
-def expected_exit_exc(checked_expected_schema) -> Optional[LexerError]:
+def expected_exit_exc(checked_expected_schema) -> Optional[LexerInputError]:
     return checked_expected_schema.data.exit_exc
 
 

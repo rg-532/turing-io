@@ -26,7 +26,7 @@ def set_environment_variables() -> Mapping[str, str]:
     data = tomllib.loads(toml_path.read_text())
 
     # Add this to ``os.environ`` later. Return this for debugging.
-    to_add = {}
+    to_add: dict[str, str] = {}
 
     # Set main metadata attributes
     meta = data.get("tool", {}).get("poetry", {})

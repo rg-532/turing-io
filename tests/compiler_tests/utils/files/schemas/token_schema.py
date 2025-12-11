@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass, field
 from typing import Sequence, Optional
 
-from compiler.frontend.lexer.errors import LexerError
+from compiler.frontend.lexer.errors import LexerInputError
 from compiler_tests.utils.files.schemas.golden_schema import GoldenFileSchema
 from compiler_tests.utils.files.schemas.base_schema import EmptySchema
 from compiler_tests.utils.objects.tokens import LexerToken
@@ -17,7 +17,7 @@ class TokenFileDataSchema(EmptySchema):
     :ivar exit_exc: Exception thrown by Lexer on exit (``None`` if no exception thrown).
     """
     tokens: Sequence[LexerToken] = field(default_factory=list)
-    exit_exc: Optional[LexerError] = None
+    exit_exc: Optional[LexerInputError] = None
 
 
 @dataclass(repr=False, kw_only=True)

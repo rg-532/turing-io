@@ -9,7 +9,7 @@ from compiler.frontend.lexer.pipeline.core import PipelineComponent, T_PipelineT
 from compiler.frontend.lexer.pipeline.core.component import PipelineSource
 
 
-class ParenthesesBasedFilter(PipelineComponent):
+class ParenthesesBasedFilter(PipelineComponent[T_PipelineToken]):
     """Filters whitespace type tokens (namely, ``WHITESPACE`` and ``EOL``) whenever they are nested within parentheses.
 
     More specifically, whenever a token of type ``WHITESPACE`` or ``EOL`` is encountered after an opening parenthesis
@@ -56,8 +56,8 @@ class ParenthesesBasedFilter(PipelineComponent):
         else:
             return set(to_filter)
 
-    def input(self, text: str) -> None:
-        super().input(text)
+    def input(self, text: str, reset: bool = True) -> None:
+        super().input(text, reset=reset)
         self.paren_count = 0
 
     def process(self, tok: T_PipelineToken) -> None:
@@ -71,7 +71,7 @@ class ParenthesesBasedFilter(PipelineComponent):
         self.output_queue.append(tok)
 
 
-class TypeBasedLookaheadFilter(PipelineComponent):
+class TypeBasedLookaheadFilter(PipelineComponent[T_PipelineToken]):
     """Uses one lookahead token to filters tokens of type ``filter_type`` if the lookahead token is of a type
     specified by ``lookahead_types``.
 
@@ -120,7 +120,7 @@ class TypeBasedLookaheadFilter(PipelineComponent):
             self.output_queue.append(tok)
 
 
-class TokenMerger(PipelineComponent):
+class TokenMerger(PipelineComponent[T_PipelineToken]):
     """Merges two subsequent tokens of type ``merge_type`` and outputs them as one.
 
     By default, the merging strategy is to add the value of the second into the first, unless either value is
@@ -184,7 +184,7 @@ class TokenMerger(PipelineComponent):
             self.output_queue.append(tok)
 
 
-class EnsureEOLAtEnd(PipelineComponent):
+class EnsureEOLAtEnd(PipelineComponent[T_PipelineToken]):
     """Simply ensures that there is an ``EOL`` token immediately before the terminating ``_ENDMARKER``, and inserts
     one with value 0 if not.
     """
@@ -192,8 +192,8 @@ class EnsureEOLAtEnd(PipelineComponent):
         super().__init__(source_lexer)
         self.last_token_type: Optional[str] = None   # look-back (opposite of lookahead).
 
-    def input(self, text: str) -> None:
-        super().input(text)
+    def input(self, text: str, reset: bool = True) -> None:
+        super().input(text, reset=reset)
         self.last_token_type = None
 
     def process(self, tok: T_PipelineToken) -> None:
@@ -209,7 +209,7 @@ class EnsureEOLAtEnd(PipelineComponent):
         self.output_queue.append(tok)
 
 
-class IndentationGenerator(PipelineComponent):
+class IndentationGenerator(PipelineComponent[T_PipelineToken]):
     """Generates a sequence of ``INDENT/DEDENT`` tokens after encountering ``EOL`` and based on the token after it.
 
     If the processed token is of type ``WHITESPACE``, it is replaced with ``INDENT/DEDENTs`` based on its length.
@@ -258,16 +258,16 @@ class IndentationGenerator(PipelineComponent):
         self.indent_stack: List[Tuple[int, int]] = [(0, 0)]
         self.is_new_line: bool = True
 
-    def input(self, text: str) -> None:
-        super().input(text)
+    def input(self, text: str, reset: bool = True) -> None:
+        super().input(text, reset=reset)
 
-        self.indent_char: Optional[str] = None
-        self.indent_char_line: Optional[int] = None
+        self.indent_char = None
+        self.indent_char_line = None
         self.indent_stack = [(0, 0)]
         self.is_new_line = True
 
     @staticmethod
-    def clone_to_indentation(anchor: T_PipelineToken, type_: Literal["INDENT", "DEDENT"]):
+    def clone_to_indentation(anchor: T_PipelineToken, type_: Literal["INDENT", "DEDENT"]) -> T_PipelineToken:
         """Static helper method which clones ``anchor`` and transforms it into a single INDENT/DEDENT token. The
         ``anchor`` sets the positional attributes of the returned token.
 
@@ -310,7 +310,8 @@ class IndentationGenerator(PipelineComponent):
         :raises InconsistentIndentationError:
             If after exiting indented segment the resulting level does not match previous indentation levels.
         """
-        if not self.indent_char:
+        if self.indent_char is None or self.indent_char_line is None:
+            assert self.indent_char is None and self.indent_char_line is None
             self.indent_char = whitespace.value[0]
             self.indent_char_line = whitespace.lineno
 

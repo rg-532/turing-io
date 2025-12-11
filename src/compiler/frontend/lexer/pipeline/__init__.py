@@ -6,3 +6,16 @@ from compiler.frontend.lexer.pipeline.core import (
     ExternalLexerReverseAdapter)
 from compiler.frontend.lexer.pipeline.concrete_components import (
     ParenthesesBasedFilter, TypeBasedLookaheadFilter, TokenMerger, EnsureEOLAtEnd, IndentationGenerator)
+
+__all__ = [
+    'PipelineTokenProto',
+    'PipelineComponent',
+    'ExternalTokenAdapterProto',
+    'ExternalLexerAdapter',
+    'ExternalLexerReverseAdapter',
+    'ParenthesesBasedFilter',
+    'TypeBasedLookaheadFilter',
+    'TokenMerger',
+    'EnsureEOLAtEnd',
+    'IndentationGenerator'
+]

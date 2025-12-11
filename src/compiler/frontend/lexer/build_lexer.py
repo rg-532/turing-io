@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any, cast
 
 from ply import lex
 
@@ -13,7 +13,7 @@ def build_lexer() -> BaseLexer[Optional[lex.LexToken]]:
 
     :return:    Lexer.
     """
-    lexer = PLYLexerFacade()
+    lexer: Any = PLYLexerFacade()
     lexer = PLYLexerAdapter(lexer)
     lexer = ParenthesesBasedFilter(lexer)
     lexer = TypeBasedLookaheadFilter(lexer, "WHITESPACE", ["EOL", '@', None])
@@ -22,5 +22,5 @@ def build_lexer() -> BaseLexer[Optional[lex.LexToken]]:
     lexer = IndentationGenerator(lexer)
     lexer = PLYLexerReverseAdapter(lexer)
 
-    return lexer
+    return cast(BaseLexer[Optional[lex.LexToken]], lexer)
 

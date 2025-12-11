@@ -12,10 +12,11 @@ class BaseLexer(ABC, Generic[T_Token]):
     The interface specified here is inspired by the ply.lex.Lexer() interrace.
     """
     @abstractmethod
-    def input(self, text: str) -> None:
+    def input(self, text: str, reset: bool = True) -> None:
         """Sets input of the lexer.
 
         :param text:    Input.
+        :param reset:   Whether to reset positional parameters on this input (for reuse).
         """
         ...
 
@@ -37,14 +38,15 @@ class BaseLexer(ABC, Generic[T_Token]):
         """
         ...
 
-    def tokenize(self, text: str) -> Generator[T_Token, None, None]:
+    def tokenize(self, text: str, reset: bool = True) -> Generator[T_Token, None, None]:
         """Unifies the ``input()`` and ``token()`` methods into one call that generates and yields the sequence of
         tokens found in `text`.
 
         :param text:    String to tokenize.
+        :param reset:   Whether to reset positional parameters on this input (for reuse).
         :return:        Tokens generator of tokens.
         """
-        self.input(text)
+        self.input(text, reset=reset)
         tok = self.token()
 
         while not self.is_terminal_token(tok):

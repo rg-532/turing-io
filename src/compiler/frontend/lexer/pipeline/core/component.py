@@ -7,7 +7,7 @@
 """
 from abc import ABC, abstractmethod
 from collections import deque
-from typing import TypeVar, Optional, Any
+from typing import TypeVar
 
 from compiler.frontend.lexer.base_lexer import BaseLexer
 from compiler.frontend.lexer.pipeline.core.token_ import PipelineTokenProto
@@ -30,15 +30,6 @@ class PipelineSource(BaseLexer[T_PipelineToken], ABC):
 
     @abstractmethod
     def is_terminal_token(self, tok: T_PipelineToken) -> bool:
-        ...
-
-    @abstractmethod
-    def new_token(
-            self, type_: Optional[str] = None, value: Any = None,
-            lineno: Optional[int] = None, colno: Optional[int] = None,
-            e_lineno: Optional[int] = None, e_colno: Optional[int] = None
-    ) -> T_PipelineToken:
-        """Makes a new token with the given parameters as its attributes."""
         ...
 
 
@@ -95,8 +86,8 @@ class PipelineComponent(PipelineSource[T_PipelineToken], ABC):
         """
         ...
 
-    def input(self, text: str) -> None:
-        self.__source.input(text)
+    def input(self, text: str, reset: bool = True) -> None:
+        self.__source.input(text, reset=reset)
         self.feedback_queue.clear()
         self.output_queue.clear()
 
@@ -119,13 +110,6 @@ class PipelineComponent(PipelineSource[T_PipelineToken], ABC):
 
     def is_terminal_token(self, tok: T_PipelineToken) -> bool:
         return self.__source.is_terminal_token(tok)
-
-    def new_token(
-            self, type_: Optional[str] = None, value: Any = None,
-            lineno: Optional[int] = None, colno: Optional[int] = None,
-            e_lineno: Optional[int] = None, e_colno: Optional[int] = None
-    ) -> T_PipelineToken:
-        return self.__source.new_token(type_, value, lineno, colno, e_lineno, e_colno)
 
     def next_input_token(self) -> T_PipelineToken:
         """Helper method which returns the next token to process.

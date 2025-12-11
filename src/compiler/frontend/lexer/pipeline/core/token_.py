@@ -8,10 +8,10 @@ class PipelineTokenProto(Protocol):
     """
     type_: Optional[str]
     value: Any
-    lineno: Optional[int]
-    colno: Optional[int]
-    e_lineno: Optional[int]
-    e_colno: Optional[int]
+    lineno: int
+    colno: int
+    e_lineno: int
+    e_colno: int
 
     def clone(self) -> Self:
         ...

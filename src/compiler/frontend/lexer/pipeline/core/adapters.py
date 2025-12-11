@@ -1,23 +1,24 @@
 """This module defines base classes for adapters for lexer pipelines.
 """
 from abc import ABC, abstractmethod
-from typing import Protocol, TypeVar, Generic, Optional, Any
+from typing import Protocol, TypeVar, Generic, Any
 
 from compiler.frontend.lexer.base_lexer import BaseLexer, T_Token
 from compiler.frontend.lexer.pipeline.core.component import PipelineSource
 from compiler.frontend.lexer.pipeline.core.token_ import PipelineTokenProto
 
-T_Lexer = TypeVar("T_Lexer", bound=BaseLexer, covariant=True)
+T_Token_co = TypeVar("T_Token_co", covariant=True)
+T_Lexer = TypeVar("T_Lexer", bound=BaseLexer[Any], covariant=True)
 
 
-class ExternalTokenAdapterProto(PipelineTokenProto, Protocol[T_Token]):
+class ExternalTokenAdapterProto(PipelineTokenProto, Protocol[T_Token_co]):
     """Helper adapter protocol for integration with external libraries' token objects (PLY, for instance).
 
     This extends the basic :class:`PipelineTokenProto` and adds a read-only property ``adapted_token`` which allows
     fetching the inner adapted token when done with the pipeline.
     """
     @property
-    def adapted_token(self) -> T_Token:
+    def adapted_token(self) -> T_Token_co:
         ...
 
 
@@ -36,8 +37,8 @@ class ExternalLexerAdapter(PipelineSource[ExternalTokenAdapterProto[T_Token]], A
     def __init__(self, adapted_lexer: T_Lexer) -> None:
         self.adapted_lexer: T_Lexer = adapted_lexer
 
-    def input(self, text: str) -> None:
-        self.adapted_lexer.input(text)
+    def input(self, text: str, reset: bool = True) -> None:
+        self.adapted_lexer.input(text, reset=reset)
 
     @abstractmethod
     def token(self) -> ExternalTokenAdapterProto[T_Token]:
@@ -45,14 +46,6 @@ class ExternalLexerAdapter(PipelineSource[ExternalTokenAdapterProto[T_Token]], A
 
     @abstractmethod
     def is_terminal_token(self, tok: ExternalTokenAdapterProto[T_Token]) -> bool:
-        ...
-
-    @abstractmethod
-    def new_token(
-            self, type_: Optional[str] = None, value: Any = None,
-            lineno: Optional[int] = None, colno: Optional[int] = None,
-            e_lineno: Optional[int] = None, e_colno: Optional[int] = None
-    ) -> ExternalTokenAdapterProto[T_Token]:
         ...
 
 
@@ -69,8 +62,8 @@ class ExternalLexerReverseAdapter(BaseLexer[T_Token], ABC):
     def __init__(self, reverse_adapted_lexer: BaseLexer[ExternalTokenAdapterProto[T_Token]]) -> None:
         self.reverse_adapted_lexer = reverse_adapted_lexer
 
-    def input(self, text: str) -> None:
-        self.reverse_adapted_lexer.input(text)
+    def input(self, text: str, reset: bool = True) -> None:
+        self.reverse_adapted_lexer.input(text, reset=reset)
 
     def token(self) -> T_Token:
         return self.reverse_adapted_lexer.token().adapted_token

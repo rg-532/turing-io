@@ -1,27 +1,27 @@
 import re
-from typing import Self
+from typing import Self, Any
 
 from compiler.utils.string import normal_str_to_raw
 
 __all__ = [
-    "LexerError",
+    "LexerInputError",
     "InvalidCharError",
     "MixedIndentationError",
     "InconsistentIndentationError"
 ]
 
 
-class LexerError(ValueError):
+class LexerInputError(ValueError):
     """Base class for all lexer errors. Inherits from :class:`ValueError` as the lexer receives inputs as strings.
     """
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> Any:
         if type(other) is not type(self):   # Strict type equality check.
             return False
 
         return other.args == self.args
 
 
-class InvalidCharError(LexerError):
+class InvalidCharError(LexerInputError):
     """A lexer error to raise when the lexer could not tokenize some portion of the text.
     """
     @classmethod
@@ -32,7 +32,7 @@ class InvalidCharError(LexerError):
         return cls(message)
 
 
-class MixedIndentationError(LexerError):
+class MixedIndentationError(LexerInputError):
     """A lexer error to raise when the scanned text uses a mixture of characters for indentation.
 
     For example, the following code:
@@ -56,7 +56,7 @@ class MixedIndentationError(LexerError):
         return cls(message)
 
 
-class InconsistentIndentationError(LexerError):
+class InconsistentIndentationError(LexerInputError):
     """A lexer error to raise when the scanned text has a line with an indentation level which is less
     than the preceding line but does not match any of the previous indentation levels.
 
