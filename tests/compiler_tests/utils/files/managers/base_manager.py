@@ -2,7 +2,7 @@
 """
 import logging
 import shutil
-from typing import Literal, Self, Optional
+from typing import Literal, Self, Optional, Any
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,7 +23,7 @@ class FileManager[T](ABC):
     :ivar dirpath:      Path to directory of files from running root.
     :ivar perms:        Permissions on files in the directory (read + write by default).
     """
-    def __init__(self, dirpath: Optional[str | os.PathLike] = None):
+    def __init__(self, dirpath: Optional[str | os.PathLike[str]] = None) -> None:
         if dirpath is None:
             dirpath = os.environ.get("PROJECT_ROOT", ".")
 
@@ -31,7 +31,7 @@ class FileManager[T](ABC):
         self.perms = _Permissions()
 
     @abstractmethod
-    def _read_core(self, fullpath: Path, **kwargs) -> T:
+    def _read_core(self, fullpath: Path, **kwargs: Any) -> T:
         """Abstract method, defining how to read a file with path ``filepath``.
 
         When overriding this method, note that:
@@ -45,7 +45,7 @@ class FileManager[T](ABC):
         ...
 
     @abstractmethod
-    def _write_core(self, fullpath: Path, data: T, **kwargs) -> None:
+    def _write_core(self, fullpath: Path, data: T, **kwargs: Any) -> None:
         """Abstract method, defining how to write generic ``data`` into file with path ``filepath``.
 
         When overriding this method, note that:
@@ -68,13 +68,13 @@ class FileManager[T](ABC):
         self.perms.write = "w" in perms
         return self
     
-    def get_path(self, filepath: str | os.PathLike) -> Path:
+    def get_path(self, filepath: str | os.PathLike[str]) -> Path:
         if os.path.isabs(filepath):
             return Path(filepath)
 
         return self.dirpath / filepath
     
-    def read(self, filepath: str | os.PathLike, **kwargs) -> T:
+    def read(self, filepath: str | os.PathLike[str], **kwargs: Any) -> T:
         """Reads and returns the contents of a file with path ``relpath`` relative to this directory.
 
         :param filepath:    Relative path to file under this directory.
@@ -94,7 +94,7 @@ class FileManager[T](ABC):
         return self._read_core(filepath, **kwargs)
 
 
-    def write(self, filepath: str | os.PathLike, data: T, allow_overwrite: bool = False, **kwargs) -> None:
+    def write(self, filepath: str | os.PathLike[str], data: T, allow_overwrite: bool = False, **kwargs: Any) -> None:
         """Writes ``data`` into a file with path ``relpath`` relative to this directory.
 
         By default, guards against overwriting existing files (set ``allow_overwrite = True`` to allow overwriting).
@@ -119,7 +119,7 @@ class FileManager[T](ABC):
         self._write_core(filepath, data, **kwargs)
         logging.info(f"Wrote file at {self.dirpath / filepath} (type = {type(data).__qualname__}).")
 
-    def exists(self, relpath: str | os.PathLike) -> bool:
+    def exists(self, relpath: str | os.PathLike[str]) -> bool:
         """Checks if a file with path ``filepath`` exists relative to this directory.
 
         :param relpath:    Relative path to a file under this directory.
@@ -128,7 +128,10 @@ class FileManager[T](ABC):
         relpath = self.dirpath / relpath
         return relpath.exists()
 
-    def move(self, curr_path: str | os.PathLike, new_path: str | os.PathLike, replace: bool  = False) -> None:
+    def move(self,
+             curr_path: str | os.PathLike[str],
+             new_path: str | os.PathLike[str],
+             replace: bool  = False) -> None:
         """Moves a file/subdirectory with path ``curr_path`` under this directory to ``new_path`` under this
         directory.
 
@@ -151,7 +154,10 @@ class FileManager[T](ABC):
 
         logging.info(f"Moved file from {curr_path} to {new_path}.")
 
-    def copy_file(self, curr_path: str | os.PathLike, new_path: str | os.PathLike, replace: bool  = False) -> None:
+    def copy_file(self,
+                  curr_path: str | os.PathLike[str],
+                  new_path: str | os.PathLike[str],
+                  replace: bool  = False) -> None:
         """Copies a file with path ``curr_path`` under this directory to ``new_path`` under this directory.
 
         :param curr_path:   Path of existing file under this directory.

@@ -5,10 +5,10 @@ The parsing result, obtained by :func:``
 import logging
 import os
 from functools import cache, cached_property
-from glob import glob
-from typing import List
+from typing import List, Literal
 
-from compiler_tests.utils.files import JsonFileManager
+from compiler_tests.utils.files import JsonFileManager, T_JsonContent
+from compiler.utils.globbing import multi_glob
 
 _logger = logging.getLogger(__name__)
 
@@ -30,25 +30,47 @@ class _LazyMetadata(object):
     cannot be referenced in any of ``pytest``'s parametrization techniques. The lazy loading is inspired from
     ``pytest``'s way of managing fixtures, computing their values only when needed by some test.
     """
-    def __init__(self, fpath: str | bytes | os.PathLike) -> None:
-        self._fpath = fpath
+    def __init__(self, fpath: str | os.PathLike[str]) -> None:
+        self._fpath: str | os.PathLike[str] = fpath
         _logger.debug(f"Made {repr(self)}")
 
     @property
-    def fpath(self):
+    def fpath(self) -> str | os.PathLike[str]:
         """Path to this file from constructor call.
         """
         return self._fpath
 
+    # This is here because of the lack of schema for read metadata files.
+    def _validate_metadata(self, metadata: T_JsonContent) -> None:
+        expected_keys = ["input_dir", "output_dir", "input_patterns"]
+        missing_keys = [key for key in expected_keys if key not in metadata]
+
+        if missing_keys:
+            raise ValueError(f"Keys {missing_keys} are missing from {self._fpath}")
+
+        if not isinstance(metadata["input_dir"], str):
+            raise ValueError(f"`input_dir` needs to be `str` (Got `{type(metadata["input_dir"])}`).")
+
+        if not isinstance(metadata["output_dir"], str):
+            raise ValueError(f"`output_dir` needs to be `str` (Got `{type(metadata["output_dir"])}`).")
+
+        if not isinstance(metadata["input_patterns"], list):
+            raise ValueError(f"`input_patterns` needs to be `list[str]`) (Got `{type(metadata["input_patterns"])}`).")
+
+        for idx, pat in enumerate(metadata["input_patterns"]):
+            if not isinstance(pat, str):
+                raise ValueError(f"`input_patterns[{idx}]` str) (Got `{type(pat)}`).")
+
     @cached_property
-    def _metadata(self):
+    def _metadata(self) -> T_JsonContent:
         metadata = _reader.read(self._fpath)
+        self._validate_metadata(metadata)
 
         _logger.debug(f"Read metadata for {repr(self)}")
         return metadata
 
-    def _get_dir(self, dir_key: str) -> str:
-        return os.path.join(TEST_DATADIR, self._metadata[dir_key])
+    def _get_dir(self, dir_key: Literal["input_dir", "output_dir"]) -> str:
+        return os.path.join(TEST_DATADIR, str(self._metadata[dir_key]))
 
     @cached_property
     def input_dir(self) -> str:
@@ -63,26 +85,27 @@ class _LazyMetadata(object):
         return self._get_dir("output_dir")
 
     @cached_property
-    def input_paths(self) -> List[str | bytes | os.PathLike]:
+    def input_paths(self) -> List[str]:
         """Sequence of all input paths specified by globbing patterns under "input_patterns" in the metadata file.
         """
-        paths = []
-        seen = set()
+        # This is here because of the lack of schema for read metadata files.
+        assert isinstance(self._metadata["input_patterns"], list)
 
-        for pattern in self._metadata["input_patterns"]:
-            for path in glob(pattern, root_dir=self.input_dir, recursive=True):
-                if path not in seen:
-                    paths.append(path)
-                    seen.add(path)
+        paths = multi_glob(
+            *self._metadata["input_patterns"],
+            root_dir=self.input_dir,
+            recursive=True)
+        # This is because `globbing.py` implementation is weird.
+        assert isinstance(paths, list)
 
         _logger.debug(f"Computed input_paths for {repr(self)}")
         return paths
 
-    def __repr__(self):
-        return f"{self.__class__.__qualname__}(fpath={self._fpath})"
+    def __repr__(self) -> str:
+        return f"{self.__class__.__qualname__}(fpath={str(self._fpath)})"
 
 
 @cache
-def lazy_metadata(fpath: str | bytes | os.PathLike) -> _LazyMetadata:
+def lazy_metadata(fpath: str | os.PathLike[str]) -> _LazyMetadata:
     return _LazyMetadata(fpath)
 

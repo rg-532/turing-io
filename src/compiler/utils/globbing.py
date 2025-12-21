@@ -4,19 +4,19 @@ import os
 from collections import OrderedDict
 from collections.abc import Callable
 from glob import glob
-from typing import AnyStr, Optional, List
+from typing import Optional, List
 
 import click
 
 
-def multi_glob(*patterns: AnyStr,
+def multi_glob(*patterns: str,
                remove_repeats: bool = True,
                flatten: bool = True,
-               filter_callback: Optional[Callable[[AnyStr], bool]] = None,
+               filter_callback: Optional[Callable[[str], bool]] = None,
                root_dir: Optional[str | bytes | os.PathLike[str] | os.PathLike[bytes]] = None,
                dir_fd: Optional[int] = None,
                recursive: bool = False,
-               include_hidden: bool = False) -> List[AnyStr] | OrderedDict[AnyStr, List[AnyStr]]:
+               include_hidden: bool = False) -> List[str] | OrderedDict[str, List[str]]:
     """Invokes ``glob.glob`` for multiple patterns. Can also remove duplicates if necessary (Does so by default).
     If invoked with 0 patterns, returns an empty result (OrderedDict or List).
 
@@ -38,7 +38,7 @@ def multi_glob(*patterns: AnyStr,
     :return:                Either a dictionary or list of matches.
     """
     seen = set()
-    matches: OrderedDict[AnyStr, List[AnyStr]] = OrderedDict()
+    matches: OrderedDict[str, List[str]] = OrderedDict()
 
     for pat in patterns:
         for match in glob(pat, root_dir=root_dir, dir_fd=dir_fd, recursive=recursive, include_hidden=include_hidden):
@@ -57,18 +57,18 @@ def multi_glob(*patterns: AnyStr,
     return matches
 
 
-def _glob_list_to_str(match_list: List[AnyStr], start_idx: int) -> str:
+def _glob_list_to_str(match_list: List[str], start_idx: int) -> str:
     segments = []
 
     for res in match_list:
-        segments.append(f"{str(start_idx)}   {res}")
+        segments.append(f"{str(start_idx)}   {str(res)}")
         start_idx += 1
 
     return "\n".join(segments)
 
 def glob_result_to_str(
         root_dir: str,
-        matches: List[AnyStr] | OrderedDict[AnyStr, List[AnyStr]]) -> str:
+        matches: OrderedDict[str, List[str]]) -> str:
     """Helper to transform matches collected via ``multi_glob`` to string.
 
     :param root_dir:

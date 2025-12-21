@@ -4,3 +4,11 @@ files. These schemas are generally meant to serve as inputs/outputs of file mana
 from compiler_tests.utils.files.schemas.base_schema import EmptySchema
 from compiler_tests.utils.files.schemas.golden_schema import GoldenFileSchema, GoldenFileOriginSchema
 from compiler_tests.utils.files.schemas.token_schema import TokenFileSchema, TokenFileDataSchema
+
+__all__ = [
+    'EmptySchema',
+    'GoldenFileSchema',
+    'GoldenFileOriginSchema',
+    'TokenFileSchema',
+    'TokenFileDataSchema'
+]

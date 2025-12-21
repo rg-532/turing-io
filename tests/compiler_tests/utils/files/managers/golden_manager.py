@@ -2,7 +2,7 @@
 """
 import os
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 
 import jsonpickle.errors
 
@@ -19,8 +19,8 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
     """
     def safe_read(
             self,
-            relpath: str | os.PathLike,
-            **kwargs
+            relpath: str | os.PathLike[str],
+            **kwargs: Any
     ) -> Tuple[Optional[T_Schema], Optional[Exception]]:
         """Safe version of ``FileManager.read``, which also returns the exception instead of raising it.
 
@@ -46,14 +46,16 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
         """
         raise ClassNotFoundError(f"Could not find class {class_name}")
 
-    def _read_core(self, fullpath: Path, **kwargs) -> T_Schema:
+    def _read_core(self, fullpath: Path, **kwargs: Any) -> T_Schema:
         defaults = dict(on_missing=self._raise_class_not_found_error)
         defaults.update(kwargs)
 
-        return jsonpickle.decode(fullpath.read_text(), **defaults)
+        schema: T_Schema = jsonpickle.decode(fullpath.read_text(), **defaults)
 
-    def _write_core(self, fullpath: Path, data: T_Schema, **kwargs) -> None:
-        defaults = dict(indent = 2)
+        return schema
+
+    def _write_core(self, fullpath: Path, data: T_Schema, **kwargs: Any) -> None:
+        defaults: dict[str, Any] = dict(indent = 2)
         defaults.update(kwargs)
 
         fullpath.write_text(jsonpickle.encode(data, **defaults))

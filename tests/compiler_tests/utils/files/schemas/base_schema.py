@@ -1,7 +1,7 @@
 """This module defines the base schema called :class:`EmptySchema` and a mixin which it inherits from.
 """
 from collections.abc import Mapping, MutableMapping, Iterator
-from typing import Dict, Any, Optional
+from typing import Any, Optional
 from dataclasses import dataclass, InitVar, KW_ONLY, fields
 
 
@@ -18,24 +18,28 @@ class ExtraAttrsMixin(MutableMapping[str, Any]):
         that such attributes should be accessed as normal, and the purpose of this mixin is to allow storage of extra
         attributes specifically.
     """
-    def __init__(self, *args, extra_attrs: Optional[Mapping[str, Any]] = None, **kwargs):
+    def __init__(self, *args: Any, extra_attrs: Optional[Mapping[str, Any]] = None, **kwargs: Any) -> None:
         if extra_attrs:
             self._extra_attrs = dict(extra_attrs)
+
         super().__init__(*args, **kwargs)
 
     def __getitem__(self, key: str) -> Any:
         if not hasattr(self, "_extra_attrs"):
             raise KeyError(f"'{key}'")
+
         return self._extra_attrs[key]
 
     def __setitem__(self, key: str, value: Any) -> None:
         if not hasattr(self, "_extra_attrs"):
-            self._extra_attrs: Dict[str, Any] = {}
+            self._extra_attrs = {}
+
         self._extra_attrs[key] = value
 
     def __delitem__(self, key: str) -> None:
         if not hasattr(self, "_extra_attrs") or key not in self._extra_attrs:
             raise KeyError(f"'{key}'")
+
         del self._extra_attrs[key]
 
         if not self._extra_attrs:
@@ -44,22 +48,26 @@ class ExtraAttrsMixin(MutableMapping[str, Any]):
     def __iter__(self) -> Iterator[str]:
         if not hasattr(self, "_extra_attrs"):
             return
+
         for key in self._extra_attrs.keys():
             yield key
 
     def __len__(self) -> int:
         if not hasattr(self, "_extra_attrs"):
             return 0
+
         return len(self._extra_attrs)
 
-    def __contains__(self, item: str) -> bool:
-        if not hasattr(self, "_extra_attrs"):
+    def __contains__(self, item: Any) -> bool:
+        if not isinstance(item, str) or not hasattr(self, "_extra_attrs"):
             return False
+
         return item in self._extra_attrs
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if not hasattr(self, "_extra_attrs"):
             return ""
+
         return repr(self._extra_attrs)
 
 
@@ -74,12 +82,13 @@ class EmptySchema(ExtraAttrsMixin):
     _: KW_ONLY
     extra_attrs: InitVar[Optional[Mapping[str, Any]]] = None
 
-    def __post_init__(self, extra_attrs: Optional[Mapping[str, Any]] = None):
+    def __post_init__(self, extra_attrs: Optional[Mapping[str, Any]] = None) -> None:
         super().__init__(extra_attrs=extra_attrs)
 
     def __getitem__(self, key: str) -> Any:
         if hasattr(self, key):
             return getattr(self, key)
+
         try:
             return super().__getitem__(key)
         except KeyError:
@@ -98,18 +107,22 @@ class EmptySchema(ExtraAttrsMixin):
         except KeyError:
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         for fld in fields(self):
-            yield fld
-        return super().__iter__()
+            yield fld.name
 
-    def __len__(self):
+        yield from super().__iter__()
+
+    def __len__(self) -> int:
         return len(fields(self)) + super().__len__()
 
-    def __contains__(self, item: str) -> bool:
+    def __contains__(self, item: Any) -> bool:
+        if not isinstance(item, str):
+            return False
+
         return hasattr(self, item) or super().__contains__(item)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         fields_reprs = [f"{f.name}={getattr(self, f.name)}" for f in fields(self)]
 
         if hasattr(self, "_extra_attrs"):

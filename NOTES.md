@@ -1,6 +1,22 @@
 # Notes
 
 ## Future Ideas
+### `Typing` Migration
+Simply remove most deprecated `typing` imports (List, Dict etc.) and replace them with modern 
+counterparts.
+
+
+### `Pydantic` Migration
+This idea is two-fold:
+1. Replace usage of `EmptySchema` with Pydantic implementations.
+   Note that this means no more extra attributes (But I don't care too much anyway).
+2. Use `Pydantic` to verify content of read JSON (non-golden) files.
+   This is opposed to validating with my own function `_validate_metadata` which is ugly.
+
+Of course, it is important to verify that Pydantic fits well to my needs and check how to repair
+the current golden files to work with the new classes.
+
+
 ### File Traceability
 A suggestion I have received was to include the input files which caused generation of output files
 as metadata, so source files could be traced. The issue here is that some output files may be tied
@@ -17,6 +33,28 @@ was to add a flag to remake golden files, which makes sense in a scenario where 
 metadata is outdated.
 
 This, however, is not super necessary yet.
+
+
+### JSON Files as Schema
+Due to how flexible the schema structure is, any structured JSON(-like) file can utilize them by
+having a schema defining its structure, and this can be especially useful for repeating structures.
+
+The upsides:
+- This provides access to read JSON files by member as opposed to by key.
+- This provides a common interface between user-defined metadata and the code that reads it.
+
+The downsides:
+- This requires added implementation, which mandates careful thought about what structured JSON
+  files there may be, for the organization of the implemented class hierarchy.
+
+A potential structure for **test metadata files**:
+- Input/Expected keys, each leading to object.
+  - Keys hold a representation to a path to some test.
+  - Values that hold a set of path (or globbing patterns) which lead to testing data for the tests.
+- This structure can be reversed or implicit in some ways.
+
+**Note:** Before anything, there's a plugin for data-driven testing for pytest which should be
+checked out.
 
 
 ### Data Migrator Refactory
@@ -55,28 +93,6 @@ Suggestion - Change the current scheme in the following way:
 This approach removes confusion occurring when both `files` are specified and `scan` appears
 before `migrate`, while exposing all desired APIs. Duplication will be handled through the refactory
 of `ops`.
-
-
-### JSON Files as Schema
-Due to how flexible the schema structure is, any structured JSON(-like) file can utilize them by
-having a schema defining its structure, and this can be especially useful for repeating structures.
-
-The upsides:
-- This provides access to read JSON files by member as opposed to by key.
-- This provides a common interface between user-defined metadata and the code that reads it.
-
-The downsides:
-- This requires added implementation, which mandates careful thought about what structured JSON
-  files there may be, for the organization of the implemented class hierarchy.
-
-A potential structure for **test metadata files**:
-- Input/Expected keys, each leading to object.
-  - Keys hold a representation to a path to some test.
-  - Values that hold a set of path (or globbing patterns) which lead to testing data for the tests.
-- This structure can be reversed or implicit in some ways.
-
-**Note:** Before anything, there's a plugin for data-driven testing for pytest which should be
-checked out
 
 
 ### Composite File Manager

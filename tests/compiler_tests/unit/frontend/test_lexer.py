@@ -1,7 +1,6 @@
 """
 TODO:
     - Write other types of tests.
-    - Consider wrapping some things in classes.
 TODO:
     - Doc some objects + fixtures + tests.
     - Move some things away to conftest / utils.
@@ -24,6 +23,10 @@ from compiler_tests.utils.files import (
     TokenFileSchema, GoldenFileOriginSchema, TokenFileDataSchema
 )
 
+type _T_OutputFileManager = GoldenFileManager[TokenFileSchema]
+type _T_Lexer = BaseLexer[Optional[lex.LexToken]]
+type _T_LexerStopExc = Optional[LexerInputError]
+type _T_TestedOutput = Tuple[List[LexerToken], _T_LexerStopExc]
 
 _metadata = lazy_metadata("metadata/lexer.json")
 """Metadata file from ``[root]/tests/data/``"""
@@ -33,26 +36,34 @@ def input_reader() -> TextFileManager:
     return TextFileManager(_metadata.input_dir).set_perms("r")
 
 @pytest.fixture(scope="module")
-def output_manager() -> GoldenFileManager[TokenFileSchema]:
+def output_manager() -> _T_OutputFileManager:
     return GoldenFileManager(_metadata.output_dir)
 
 @pytest.fixture(scope="class")
-def lexer(input_relpath) -> BaseLexer[Optional[lex.LexToken]]:
+def lexer(input_relpath: str) -> _T_Lexer:
     """Fixture ``input_relpath`` is here to **force** lexer recreation."""
     return build_lexer()
 
 
 @pytest.fixture(scope="class", params=_metadata.input_paths)
-def input_relpath(request) -> str:
-    return request.param
+def input_relpath(request: pytest.FixtureRequest) -> str:
+    if not hasattr(request, "param"):
+        raise RuntimeError("input_relpath :: BUG - `request` does not have attribute `param` (not parametrized).")
+
+    param: str = getattr(request, "param")
+
+    if not isinstance(getattr(request, "param"), str):
+        raise RuntimeError("input_relpath :: BUG - `request.param` is not a string!")
+
+    return param
 
 @pytest.fixture(scope="class")
-def input_data(input_reader, input_relpath) -> str:
+def input_data(input_reader: TextFileManager, input_relpath: str) -> str:
     """Assumes file ``{input_mgr.dirpath}/{input_relpath}`` exists."""
     return input_reader.read(input_relpath)
 
 @pytest.fixture(scope="class")
-def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerInputError]]:
+def lexer_output(lexer: _T_Lexer, input_data: str) -> _T_TestedOutput:
     """Captures scanned tokens and exit exception if occurred."""
     tokens: List[LexerToken] = []
     exit_exc: Optional[LexerInputError] = None
@@ -66,25 +77,27 @@ def lexer_output(lexer, input_data) -> Tuple[List[LexerToken], Optional[LexerInp
     return tokens, exit_exc
 
 @pytest.fixture(scope="class")
-def lexer_tokens(lexer_output) -> List[LexerToken]:
+def lexer_tokens(lexer_output: _T_TestedOutput) -> List[LexerToken]:
     return lexer_output[0]
 
 @pytest.fixture(scope="class")
-def lexer_exit_exc(lexer_output) -> Optional[LexerInputError]:
+def lexer_exit_exc(lexer_output: _T_TestedOutput) -> _T_LexerStopExc:
     return lexer_output[1]
 
 
 @pytest.fixture(scope="class")
-def expected_relpath(input_relpath) -> str:
+def expected_relpath(input_relpath: str) -> str:
     return f"{input_relpath}.tok"
 
 @pytest.fixture(scope="class")
-def golden_relpath(expected_relpath) -> str:
+def golden_relpath(expected_relpath: str) -> str:
     dirpath, filename = os.path.split(expected_relpath)
     return os.path.join(dirpath, ".golden/", filename)
 
 @pytest.fixture(scope="class")
-def raw_expected_schema(output_manager, expected_relpath, request) -> TokenFileSchema:
+def raw_expected_schema(output_manager: _T_OutputFileManager,
+                        expected_relpath: str,
+                        request: pytest.FixtureRequest) -> TokenFileSchema:
     """Returns the expected output's schema or an exception thrown when reading."""
     schema, cause = output_manager.safe_read(expected_relpath)
 
@@ -105,7 +118,8 @@ def raw_expected_schema(output_manager, expected_relpath, request) -> TokenFileS
 
 
 @pytest.fixture(scope="class")
-def checked_expected_schema(raw_expected_schema) -> TokenFileSchema:
+def checked_expected_schema(raw_expected_schema: TokenFileSchema) -> TokenFileSchema:
+    """Checks that version of read schema is up to date."""
     read_version = raw_expected_schema.schema_version
     current_version = TokenFileSchema.schema_version
 
@@ -115,21 +129,21 @@ def checked_expected_schema(raw_expected_schema) -> TokenFileSchema:
     return raw_expected_schema
 
 @pytest.fixture(scope="class")
-def expected_tokens(checked_expected_schema) -> List[LexerToken]:
+def expected_tokens(checked_expected_schema: TokenFileSchema) -> List[LexerToken]:
     return list(checked_expected_schema.data.tokens)
 
 @pytest.fixture(scope="class")
-def expected_exit_exc(checked_expected_schema) -> Optional[LexerInputError]:
+def expected_exit_exc(checked_expected_schema: TokenFileSchema) -> _T_LexerStopExc:
     return checked_expected_schema.data.exit_exc
 
 
 class TestLexerWithRecreation(object):
     """Defines basic input/output testing with the lexer object being recreated for each input.
     """
-    def test_lexer_tokens(self, lexer_tokens, expected_tokens):
+    def test_lexer_tokens(self, lexer_tokens: List[LexerToken], expected_tokens: List[LexerToken]) -> None:
         assert lexer_tokens == expected_tokens
 
-    def test_lexer_exit_exc(self, lexer_exit_exc, expected_exit_exc):
+    def test_lexer_exit_exc(self, lexer_exit_exc: _T_LexerStopExc, expected_exit_exc: _T_LexerStopExc) -> None:
         assert lexer_exit_exc == expected_exit_exc
 
 

@@ -25,7 +25,7 @@ class LexerToken(object):
     :ivar colno:    Column number of the token's beginning in the original file (``None`` if unset).
     """
     _VALUELESS_TOKEN_TYPES: ClassVar[List[str]] = (
-            list(PLYLexerFacade.keywords.values())      # When stable, change this to literal list maybe?
+            list(PLYLexerFacade.keywords.values())      # TODO - When stable, change this to literal list maybe?
             + list(PLYLexerFacade.literals)             # Same as above
             + ["INDENT", "DEDENT", "WHITESPACE"]
     )
@@ -37,16 +37,20 @@ class LexerToken(object):
     colno: Optional[int]
 
     def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, LexerToken):
-            if isinstance(other, PLYToken):
-               other: LexerToken = LexerToken.from_tok(other)
-            else:
-                return NotImplemented
+        if isinstance(other, LexerToken):
+            other_tok: LexerToken = other
+        elif isinstance(other, PLYToken):
+            other_tok = LexerToken.from_tok(other)
+        else:
+            return NotImplemented
 
-        return (self.typ == other.typ and
-                self.value == other.value and
-                self.lineno == other.lineno and
-                self.colno == other.colno)
+
+        result = (self.typ == other_tok.typ and
+                self.value == other_tok.value and
+                self.lineno == other_tok.lineno and
+                self.colno == other_tok.colno)
+
+        return result
 
     def to_formatted_string(self, template: str = "{typ} ({value})  pos=({lineno}, {colno})") -> str:
         """Returns a string representing the token with format ``template``.
@@ -97,8 +101,8 @@ class LexerToken(object):
         if type_ and type_ in LexerToken._VALUELESS_TOKEN_TYPES:
             value = None
 
-        lineno: int = getattr(tok, "lineno", None)
-        colno: int = getattr(tok, "colno", None)
+        lineno: int = getattr(tok, "lineno", -1)
+        colno: int = getattr(tok, "colno", -1)
 
         return LexerToken(type_, value, lineno, colno)
 

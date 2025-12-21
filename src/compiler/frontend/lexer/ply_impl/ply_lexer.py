@@ -135,7 +135,7 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
     def is_terminal_token(self, tok: Optional[lex.LexToken]) -> bool:
         return tok is None
 
-    def get_pos_as_token(self) -> lex.LexToken:  # TODO - check for input call here
+    def get_pos_as_token(self) -> lex.LexToken:
         tok = lex.LexToken()
 
         tok.type = tok.value = None
