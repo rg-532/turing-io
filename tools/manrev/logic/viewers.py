@@ -1,17 +1,16 @@
 """Implements viewer classes and tempfile utilities for viewing schemas of golden files (see :class:`Viewer`).
 """
-import abc
 import os
 import subprocess
 import tempfile
-from typing import Optional, Dict, Type, TypeAlias, TypeVar, Generic
+from abc import ABC, abstractmethod
+from typing import Optional
 
 from tabulate import tabulate
 
 from compiler_tests.utils.files import GoldenFileSchema, TokenFileSchema
 
-_T_NamedTemporaryFile: TypeAlias = tempfile._TemporaryFileWrapper
-_T_Schema: TypeVar = TypeVar("_T_Schema", bound=GoldenFileSchema)
+type _T_NamedTemporaryFile = tempfile._TemporaryFileWrapper
 
 
 class SchemaTypeNotSupportedError(ValueError):
@@ -20,7 +19,7 @@ class SchemaTypeNotSupportedError(ValueError):
     pass
 
 
-class Viewer(abc.ABC, Generic[_T_Schema]):
+class Viewer[T_Schema: GoldenFileSchema](ABC):
     """Base class which provides logic for viewing some :class:`GoldenFileSchema` contents within a temporary file.
 
     This class mandates implementation of two abstract methods in its subclasses:
@@ -32,16 +31,16 @@ class Viewer(abc.ABC, Generic[_T_Schema]):
 
     :ivar schema:  Schema to write and show.
     """
-    def __init__(self, schema: _T_Schema) -> None:
+    def __init__(self, schema: T_Schema) -> None:
         self.schema = schema
 
-    @abc.abstractmethod
+    @abstractmethod
     def _write_schema(self, tmp: _T_NamedTemporaryFile) -> None:
         """Writes ``self.schema`` into the temporary file given as a file handler ``tmp``.
         """
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def _view_core(self, tmp: _T_NamedTemporaryFile) -> None:
         """Core method of showing the temporary file given as a file handler ``tmp``.
         """
@@ -62,14 +61,14 @@ class Viewer(abc.ABC, Generic[_T_Schema]):
         self.view(tmp)
 
 
-class GeditViewer(Viewer[_T_Schema]):
+class GeditViewer[T_Schema: GoldenFileSchema](Viewer[T_Schema]):
     """Intermediate abstract class of :class:`Viewer` which views files in a new window of **Gedit**. The subprocess
     is executed in a blocking manner, meaning it needs to be exited before the program proceeds.
 
     This class implements :func:`_view_core`, but still requires implementation of :func:`_write_schema` from its
     subclasses.
     """
-    @abc.abstractmethod
+    @abstractmethod
     def _write_schema(self, tmp: _T_NamedTemporaryFile) -> None:
         ...
 
@@ -117,11 +116,11 @@ def get_tempfile(
 
 
 
-_viewer_map: Dict[Type[GoldenFileSchema], Type[Viewer]] = {
+_viewer_map: dict[type[GoldenFileSchema], type[Viewer]] = {
     TokenFileSchema: TokenFileViewer}
 """Simple map for the factory method below."""
 
-def get_viewer(schema: _T_Schema) -> Viewer[_T_Schema]:
+def get_viewer[T_Schema: GoldenFileSchema](schema: T_Schema) -> Viewer[T_Schema]:
     """Factory method which returns an appropriate :class:`Viewer` instance based on the type of the ``schema``
     it received.
 

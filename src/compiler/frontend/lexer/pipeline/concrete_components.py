@@ -2,14 +2,13 @@
 """
 
 from collections.abc import Iterable, Set, Callable
-from typing import Optional, List, Tuple, Literal
+from typing import Optional, Literal
 
 from compiler.frontend.lexer.errors import MixedIndentationError, InconsistentIndentationError
-from compiler.frontend.lexer.pipeline.core import PipelineComponent, T_PipelineToken
-from compiler.frontend.lexer.pipeline.core.component import PipelineSource
+from compiler.frontend.lexer.pipeline.core import PipelineTokenProto, PipelineSource, PipelineComponent
 
 
-class ParenthesesBasedFilter(PipelineComponent[T_PipelineToken]):
+class ParenthesesBasedFilter[T_PipelineToken: PipelineTokenProto](PipelineComponent[T_PipelineToken]):
     """Filters whitespace type tokens (namely, ``WHITESPACE`` and ``EOL``) whenever they are nested within parentheses.
 
     More specifically, whenever a token of type ``WHITESPACE`` or ``EOL`` is encountered after an opening parenthesis
@@ -71,7 +70,7 @@ class ParenthesesBasedFilter(PipelineComponent[T_PipelineToken]):
         self.output_queue.append(tok)
 
 
-class TypeBasedLookaheadFilter(PipelineComponent[T_PipelineToken]):
+class TypeBasedLookaheadFilter[T_PipelineToken: PipelineTokenProto](PipelineComponent[T_PipelineToken]):
     """Uses one lookahead token to filters tokens of type ``filter_type`` if the lookahead token is of a type
     specified by ``lookahead_types``.
 
@@ -120,7 +119,7 @@ class TypeBasedLookaheadFilter(PipelineComponent[T_PipelineToken]):
             self.output_queue.append(tok)
 
 
-class TokenMerger(PipelineComponent[T_PipelineToken]):
+class TokenMerger[T_PipelineToken: PipelineTokenProto](PipelineComponent[T_PipelineToken]):
     """Merges two subsequent tokens of type ``merge_type`` and outputs them as one.
 
     By default, the merging strategy is to add the value of the second into the first, unless either value is
@@ -184,7 +183,7 @@ class TokenMerger(PipelineComponent[T_PipelineToken]):
             self.output_queue.append(tok)
 
 
-class EnsureEOLAtEnd(PipelineComponent[T_PipelineToken]):
+class EnsureEOLAtEnd[T_PipelineToken: PipelineTokenProto](PipelineComponent[T_PipelineToken]):
     """Simply ensures that there is an ``EOL`` token immediately before the terminating ``_ENDMARKER``, and inserts
     one with value 0 if not.
     """
@@ -209,7 +208,7 @@ class EnsureEOLAtEnd(PipelineComponent[T_PipelineToken]):
         self.output_queue.append(tok)
 
 
-class IndentationGenerator(PipelineComponent[T_PipelineToken]):
+class IndentationGenerator[T_PipelineToken: PipelineTokenProto](PipelineComponent[T_PipelineToken]):
     """Generates a sequence of ``INDENT/DEDENT`` tokens after encountering ``EOL`` and based on the token after it.
 
     If the processed token is of type ``WHITESPACE``, it is replaced with ``INDENT/DEDENTs`` based on its length.
@@ -255,7 +254,7 @@ class IndentationGenerator(PipelineComponent[T_PipelineToken]):
 
         self.indent_char: Optional[str] = None
         self.indent_char_line: Optional[int] = None
-        self.indent_stack: List[Tuple[int, int]] = [(0, 0)]
+        self.indent_stack: list[tuple[int, int]] = [(0, 0)]
         self.is_new_line: bool = True
 
     def input(self, text: str, reset: bool = True) -> None:

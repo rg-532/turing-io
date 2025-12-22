@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import os
 import tomllib
+from collections.abc import Mapping
 from functools import cache
 from pathlib import Path
 from datetime import datetime
-from typing import Mapping
 
 
 @cache

@@ -9,7 +9,7 @@ TODO:
 """
 import logging
 import os.path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 import pytest
 from ply import lex
@@ -26,7 +26,7 @@ from compiler_tests.utils.files import (
 type _T_OutputFileManager = GoldenFileManager[TokenFileSchema]
 type _T_Lexer = BaseLexer[Optional[lex.LexToken]]
 type _T_LexerStopExc = Optional[LexerInputError]
-type _T_TestedOutput = Tuple[List[LexerToken], _T_LexerStopExc]
+type _T_TestedOutput = tuple[list[LexerToken], _T_LexerStopExc]
 
 _metadata = lazy_metadata("metadata/lexer.json")
 """Metadata file from ``[root]/tests/data/``"""
@@ -65,7 +65,7 @@ def input_data(input_reader: TextFileManager, input_relpath: str) -> str:
 @pytest.fixture(scope="class")
 def lexer_output(lexer: _T_Lexer, input_data: str) -> _T_TestedOutput:
     """Captures scanned tokens and exit exception if occurred."""
-    tokens: List[LexerToken] = []
+    tokens: list[LexerToken] = []
     exit_exc: Optional[LexerInputError] = None
 
     try:
@@ -77,7 +77,7 @@ def lexer_output(lexer: _T_Lexer, input_data: str) -> _T_TestedOutput:
     return tokens, exit_exc
 
 @pytest.fixture(scope="class")
-def lexer_tokens(lexer_output: _T_TestedOutput) -> List[LexerToken]:
+def lexer_tokens(lexer_output: _T_TestedOutput) -> list[LexerToken]:
     return lexer_output[0]
 
 @pytest.fixture(scope="class")
@@ -129,7 +129,7 @@ def checked_expected_schema(raw_expected_schema: TokenFileSchema) -> TokenFileSc
     return raw_expected_schema
 
 @pytest.fixture(scope="class")
-def expected_tokens(checked_expected_schema: TokenFileSchema) -> List[LexerToken]:
+def expected_tokens(checked_expected_schema: TokenFileSchema) -> list[LexerToken]:
     return list(checked_expected_schema.data.tokens)
 
 @pytest.fixture(scope="class")
@@ -140,7 +140,7 @@ def expected_exit_exc(checked_expected_schema: TokenFileSchema) -> _T_LexerStopE
 class TestLexerWithRecreation(object):
     """Defines basic input/output testing with the lexer object being recreated for each input.
     """
-    def test_lexer_tokens(self, lexer_tokens: List[LexerToken], expected_tokens: List[LexerToken]) -> None:
+    def test_lexer_tokens(self, lexer_tokens: list[LexerToken], expected_tokens: list[LexerToken]) -> None:
         assert lexer_tokens == expected_tokens
 
     def test_lexer_exit_exc(self, lexer_exit_exc: _T_LexerStopExc, expected_exit_exc: _T_LexerStopExc) -> None:

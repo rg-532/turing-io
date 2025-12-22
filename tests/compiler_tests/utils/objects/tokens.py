@@ -3,7 +3,7 @@ instances and adds on top of them some utilities useful for testing.
 """
 from __future__ import annotations
 
-from typing import ClassVar, List, Optional, Any
+from typing import ClassVar, Optional, Any
 from dataclasses import dataclass
 import copy
 
@@ -24,7 +24,7 @@ class LexerToken(object):
     :ivar lineno:   Line number of the token's beginning in the original file (``None`` if not set).
     :ivar colno:    Column number of the token's beginning in the original file (``None`` if unset).
     """
-    _VALUELESS_TOKEN_TYPES: ClassVar[List[str]] = (
+    _VALUELESS_TOKEN_TYPES: ClassVar[list[str]] = (
             list(PLYLexerFacade.keywords.values())      # TODO - When stable, change this to literal list maybe?
             + list(PLYLexerFacade.literals)             # Same as above
             + ["INDENT", "DEDENT", "WHITESPACE"]

@@ -2,7 +2,7 @@
 """
 import os
 from pathlib import Path
-from typing import Tuple, Optional, Any
+from typing import Optional, Any
 
 import jsonpickle.errors
 
@@ -21,7 +21,7 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
             self,
             relpath: str | os.PathLike[str],
             **kwargs: Any
-    ) -> Tuple[Optional[T_Schema], Optional[Exception]]:
+    ) -> tuple[Optional[T_Schema], Optional[Exception]]:
         """Safe version of ``FileManager.read``, which also returns the exception instead of raising it.
 
         Only one item in the returned tuple is not set to None, based on what happened during ``read``:

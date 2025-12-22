@@ -7,15 +7,12 @@
 """
 from abc import ABC, abstractmethod
 from collections import deque
-from typing import TypeVar
 
 from compiler.frontend.lexer.base_lexer import BaseLexer
 from compiler.frontend.lexer.pipeline.core.token_ import PipelineTokenProto
 
-T_PipelineToken = TypeVar("T_PipelineToken", bound=PipelineTokenProto)
 
-
-class PipelineSource(BaseLexer[T_PipelineToken], ABC):
+class PipelineSource[T_PipelineToken: PipelineTokenProto](BaseLexer[T_PipelineToken], ABC):
     """Defines an interface + initialization for a **pipeline source**, which sits at the bottom of a pipeline and
     serves as a source of :class:`PipelineToken` objects.
 
@@ -33,7 +30,7 @@ class PipelineSource(BaseLexer[T_PipelineToken], ABC):
         ...
 
 
-class PipelineComponent(PipelineSource[T_PipelineToken], ABC):
+class PipelineComponent[T_PipelineToken: PipelineTokenProto](PipelineSource[T_PipelineToken], ABC):
     """Defines an interface + initialization for a **pipeline component**, which serves as an object that wraps some
     base lexer and alters its output stream in some way.
 

@@ -1,14 +1,14 @@
 """This module defines a file manager for basic JSON files (which do not contain objects).
 """
-from typing import TypeAlias, Any
+from typing import Any
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 import json
 
 from compiler_tests.utils.files.managers.base_manager import FileManager
 
-_T_Content: TypeAlias = Mapping[str, "_T_Content"] | Sequence["_T_Content"] | str | int | float | bool | None
-T_JsonContent: TypeAlias = Mapping[str, _T_Content]
+type _T_Content = Mapping[str, "_T_Content"] | Sequence["_T_Content"] | str | int | float | bool | None
+type T_JsonContent = Mapping[str, _T_Content]
 
 class JsonFileManager(FileManager[T_JsonContent]):
     """Implements functionality to read/write JSON files into/from python mappings which are compatible with ``json``

@@ -5,7 +5,7 @@ The parsing result, obtained by :func:``
 import logging
 import os
 from functools import cache, cached_property
-from typing import List, Literal
+from typing import Literal
 
 from compiler_tests.utils.files import JsonFileManager, T_JsonContent
 from compiler.utils.globbing import multi_glob
@@ -85,7 +85,7 @@ class _LazyMetadata(object):
         return self._get_dir("output_dir")
 
     @cached_property
-    def input_paths(self) -> List[str]:
+    def input_paths(self) -> list[str]:
         """Sequence of all input paths specified by globbing patterns under "input_patterns" in the metadata file.
         """
         # This is here because of the lack of schema for read metadata files.

@@ -1,28 +1,25 @@
 """This module defines base classes for adapters for lexer pipelines.
 """
 from abc import ABC, abstractmethod
-from typing import Protocol, TypeVar, Generic, Any
+from typing import Protocol, Any
 
-from compiler.frontend.lexer.base_lexer import BaseLexer, T_Token
+from compiler.frontend.lexer.base_lexer import BaseLexer
 from compiler.frontend.lexer.pipeline.core.component import PipelineSource
 from compiler.frontend.lexer.pipeline.core.token_ import PipelineTokenProto
 
-T_Token_co = TypeVar("T_Token_co", covariant=True)
-T_Lexer = TypeVar("T_Lexer", bound=BaseLexer[Any], covariant=True)
 
-
-class ExternalTokenAdapterProto(PipelineTokenProto, Protocol[T_Token_co]):
+class ExternalTokenAdapterProto[T_Token](PipelineTokenProto, Protocol):
     """Helper adapter protocol for integration with external libraries' token objects (PLY, for instance).
 
     This extends the basic :class:`PipelineTokenProto` and adds a read-only property ``adapted_token`` which allows
     fetching the inner adapted token when done with the pipeline.
     """
     @property
-    def adapted_token(self) -> T_Token_co:
+    def adapted_token(self) -> T_Token:
         ...
 
 
-class ExternalLexerAdapter(PipelineSource[ExternalTokenAdapterProto[T_Token]], ABC, Generic[T_Token, T_Lexer]):
+class ExternalLexerAdapter[T_Token, T_Lexer: BaseLexer[Any]](PipelineSource[ExternalTokenAdapterProto[T_Token]], ABC):
     """Base adapter class for integration with external libraries lexer objects (PLY, for instance).
 
     The generic type ``T_InToken`` represents the class of token the adapted lexer produces, and implementations of
@@ -49,7 +46,7 @@ class ExternalLexerAdapter(PipelineSource[ExternalTokenAdapterProto[T_Token]], A
         ...
 
 
-class ExternalLexerReverseAdapter(BaseLexer[T_Token], ABC):
+class ExternalLexerReverseAdapter[T_Token](BaseLexer[T_Token], ABC):
     """Base adapter class for integration with external libraries lexer objects (PLY, for instance).
 
     The generic type "T_Token" represents the class of token the adapted lexer produces, and implementations of
