@@ -3,8 +3,6 @@ import logging
 import click
 
 
-
-
 class ClickFormatter(logging.Formatter):
     LEVEL_STYLES = {
         "error":    dict(fg='red', bold=True),

@@ -1,6 +1,5 @@
 import os
 from collections import OrderedDict
-from typing import Tuple, List
 
 import click
 from tabulate import tabulate
@@ -20,8 +19,8 @@ def data_migrator_cli(ctx: click.Context, root_dir: str) -> None:
     ctx.obj["manager"] = GoldenFileManager(root_dir)
 
 
-def display_scan_result(results: OrderedDict[str, List[Tuple[str,  str]]], root_dir: str):
-    described_matches: OrderedDict[str, List[str]] = OrderedDict()
+def display_scan_result(results: OrderedDict[str, list[tuple[str,  str]]], root_dir: str):
+    described_matches: OrderedDict[str, list[str]] = OrderedDict()
 
     for pattern, result_list in results.items():
         result_table = tabulate(result_list, tablefmt='plain')
@@ -35,7 +34,7 @@ def display_scan_result(results: OrderedDict[str, List[Tuple[str,  str]]], root_
               metavar='<suffix>', show_default=True,
               help='Suffix of the files to be found. can be used multiple times for multiple suffixes')
 @click.pass_context
-def scan(ctx: click.Context, suffixes: Tuple[str, ...]) -> None:
+def scan(ctx: click.Context, suffixes: tuple[str, ...]) -> None:
     """Find files which need migration."""
     data = ctx.obj
     data["scan_results"] = ops.find_files(data["manager"], suffixes)
@@ -49,7 +48,7 @@ def scan(ctx: click.Context, suffixes: Tuple[str, ...]) -> None:
 @click.option('--backup/--no-backup', 'backup', default=True,
               help="Shows a detailed description of migration and exit.")
 @click.pass_context
-def migrate(ctx: click.Context, files: Tuple[str, ...], show_only: bool, backup: bool) -> None:
+def migrate(ctx: click.Context, files: tuple[str, ...], show_only: bool, backup: bool) -> None:
     """Migrate files at [file_paths] to latest version. Can be chained after 'scan' to migrate all results.
     """
     data = ctx.obj

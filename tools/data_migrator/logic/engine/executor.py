@@ -3,18 +3,18 @@
 """
 from collections import deque
 from functools import cached_property
-from typing import Optional, List, Type, Dict, Generic
+from typing import Optional
 
 from compiler_tests.utils.files import GoldenFileSchema
 
 from data_migrator.logic.engine.collector import get_collector, collect
 from data_migrator.logic.engine.errors import NoMigrationPathError
-from data_migrator.logic.engine.types_ import T_Schema, Migration
+from data_migrator.logic.engine.types_ import Migration
 from utils.common import typed_cache, pre_call_hook, get_func_desc
 
 
 @typed_cache
-def _get_bfs_parent_map(schema_type: Type[GoldenFileSchema], src: str) -> Dict[str, str]:
+def _get_bfs_parent_map(schema_type: type[GoldenFileSchema], src: str) -> dict[str, str]:
     """Executes BFS from ``src`` in the version graph constructed for ``schema_type``, and returns a mapping of
     parents (``child:parent``) constructed in this process.
 
@@ -43,16 +43,16 @@ def _get_bfs_parent_map(schema_type: Type[GoldenFileSchema], src: str) -> Dict[s
     return parent
 
 
-class _MigrationExecutor(Generic[T_Schema]):
+class _MigrationExecutor[T_Schema: GoldenFileSchema](object):
     """TODO - doc this.
     """
-    def __init__(self, schema_type: Type[T_Schema], src: str, dst: str) -> None:
-        self._schema_type: Type[T_Schema] = schema_type
+    def __init__(self, schema_type: type[T_Schema], src: str, dst: str) -> None:
+        self._schema_type: type[T_Schema] = schema_type
         self._src: str = src
         self._dst: str = dst
 
     @cached_property
-    def version_path(self) -> Optional[List[str]]:
+    def version_path(self) -> Optional[list[str]]:
         """Shortest path of versions from ``self._src`` to ``self._dst``, based on collected migrations for
         ``self._schema_type``.
         """
@@ -94,7 +94,7 @@ class _MigrationExecutor(Generic[T_Schema]):
         return " -> ".join(self.version_path)
 
     @cached_property
-    def scripts(self) -> Optional[List[Migration[T_Schema]]]:
+    def scripts(self) -> Optional[list[Migration[T_Schema]]]:
         """Sequence of scripts (functions) to execute to migrate a schema, based on ``self.version_path``.
 
         Note that the number of scripts is always one less than the length of the version path.
@@ -105,7 +105,7 @@ class _MigrationExecutor(Generic[T_Schema]):
             return None
 
         migrations = get_collector(self._schema_type).migrations
-        scripts: List[Migration[T_Schema]] = []
+        scripts: list[Migration[T_Schema]] = []
 
         for idx in range(1, len(path)):
             scripts.append(migrations[path[idx - 1]][path[idx]])
@@ -161,6 +161,10 @@ class _MigrationExecutor(Generic[T_Schema]):
 
 @typed_cache
 @pre_call_hook(collect)
-def get_executor(schema_type: Type[T_Schema], src_version: str, dst_version: str) -> _MigrationExecutor[T_Schema]:
+def get_executor[T_Schema: GoldenFileSchema](
+        schema_type: type[T_Schema],
+        src_version: str,
+        dst_version: str
+) -> _MigrationExecutor[T_Schema]:
     return _MigrationExecutor(schema_type, src_version, dst_version)
 

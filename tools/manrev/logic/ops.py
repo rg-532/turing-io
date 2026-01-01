@@ -1,13 +1,13 @@
 import logging
 import os
+from collections import OrderedDict
 from collections.abc import Sequence
 from pathlib import Path
-from typing import List, AnyStr, OrderedDict
 
 from compiler_tests.utils.files import GoldenFileManager
 
 from manrev.logic.viewers import get_tempfile, get_viewer
-from utils.globbing import multi_glob
+from compiler.utils.globbing import multi_glob
 
 _logger = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 def find_files(
         root_dir: str = os.getcwd(),
         suffixes: Sequence[str] = ('.tm.tok',)
-) -> OrderedDict[AnyStr, List[AnyStr]]:
+) -> OrderedDict[str, list[str]]:
     """Scans for files to review starting from ``root_dir`` and filters for those ending with any ``suffixes``.
     The files needing review are those under an inner directory named ``.golden`` (can be nested in more directories).
 

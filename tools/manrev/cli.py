@@ -1,5 +1,4 @@
 import os
-from typing import Tuple
 
 import click
 
@@ -20,7 +19,7 @@ def manrev_cli() -> None:
 @click.option('--suffix', '-s', 'suffixes', multiple=True, default=('.tm.tok',),
               metavar='<suffix>', show_default=True,
               help='Suffix of the files to be found. can be used multiple times for multiple suffixes')
-def scan(root_dir: str, suffixes: Tuple['str']) -> None:
+def scan(root_dir: str, suffixes: tuple[str]) -> None:
     """Find golden files to review."""
     matches = ops.find_files(root_dir, suffixes)
     click.echo(glob_result_to_str(root_dir, matches))

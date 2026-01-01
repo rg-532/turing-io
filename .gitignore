@@ -327,12 +327,8 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/c,c++,python
 
 
-
 # LibreOffice files
 *.~lock.*
-
-# Temporary ignore .idea
-.idea
 
 # Other temporary ignore for sanity:
 .git-old

@@ -1,17 +1,18 @@
+from collections import OrderedDict
 from datetime import datetime
 import logging
 import os
 from collections.abc import Sequence
 from json import JSONDecodeError
 from pathlib import Path
-from typing import List, OrderedDict, Optional, Tuple
+from typing import Optional
 
 from compiler_tests.utils.files import GoldenFileManager, ClassNotFoundError, GoldenFileSchema
 
 from data_migrator.logic.engine.errors import NoMigrationPathError
 from data_migrator.logic.engine.executor import get_executor
 
-from utils.globbing import multi_glob
+from compiler.utils.globbing import multi_glob
 
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ _logger = logging.getLogger(__name__)
 def find_files(
         manager: GoldenFileManager[GoldenFileSchema],
         suffixes: Sequence[str] = ('.tm.tok',)
-) -> OrderedDict[str, List[Tuple[str, str]]]:
+) -> OrderedDict[str, list[tuple[str, str]]]:
     """Fetches all files that need migration (based on their ``schema_version`` and the current one for their class)
     under directory at ``manager.dirpath``. Filters for those ending with any ``suffixes``, and returns a dictionary
     of entries ``(pattern,result_list)`` with each result being a tuple of ``(file,version_path)``.
@@ -36,10 +37,10 @@ def find_files(
         *patterns, root_dir=str(manager.dirpath), recursive=True, flatten=False,
         filter_callback=lambda m: os.path.isfile(manager.get_path(m)))
 
-    results: OrderedDict[str, List[Tuple[str, str]]] = OrderedDict()
+    results: OrderedDict[str, list[tuple[str, str]]] = OrderedDict()
 
     for pattern, file_list in list(found_files.items()):
-        result_list: List[Tuple[str, str]] = []
+        result_list: list[tuple[str, str]] = []
 
         for file in file_list:
             try:

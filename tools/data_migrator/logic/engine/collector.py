@@ -4,20 +4,21 @@ import importlib
 import os
 import sys
 from collections import OrderedDict
+from collections.abc import Callable
 from functools import cache
 from pathlib import Path
-from typing import Callable, Type, Generic, List
 
+from compiler_tests.utils.files import GoldenFileSchema
 from data_migrator import TOOL_PATH
-from data_migrator.logic.engine.types_ import T_Schema, Migration, MigrationsCollection
+from data_migrator.logic.engine.types_ import Migration, MigrationsCollection
 from data_migrator.logic.engine.errors import MigrationExistsError
 from utils.common import typed_cache
-from utils.globbing import multi_glob
+from compiler.utils.globbing import multi_glob
 
 
-class _MigrationsCollector(Generic[T_Schema]):
-    def __init__(self, schema_type: Type[T_Schema]):
-        self._schema_type: Type[T_Schema] = schema_type  # For reporting.
+class _MigrationsCollector[T_Schema: GoldenFileSchema](object):
+    def __init__(self, schema_type: type[T_Schema]):
+        self._schema_type: type[T_Schema] = schema_type  # For reporting.
         self.migrations: MigrationsCollection = OrderedDict()
 
     def add_script(self, src_v: str, dst_v: str, func: Migration[T_Schema]) -> None:
@@ -25,13 +26,13 @@ class _MigrationsCollector(Generic[T_Schema]):
 
         if dst_v in self.migrations[src_v]:
             old_func = self.migrations[src_v][dst_v]
-            raise MigrationExistsError(self._schema_type, src_v, dst_v, old_func, func)
+            raise MigrationExistsError.from_params(self._schema_type, src_v, dst_v, old_func, func)
 
         self.migrations[src_v][dst_v] = func
 
 
 @typed_cache
-def get_collector(schema_type: Type[T_Schema]) -> _MigrationsCollector[T_Schema]:
+def get_collector[T_Schema: GoldenFileSchema](schema_type: type[T_Schema]) -> _MigrationsCollector[T_Schema]:
     """Factory method of :class:`_MigrationsCollector`. Ensures that the same collector is returned for the same type
     (using ``functools.cache``).
 
@@ -41,8 +42,8 @@ def get_collector(schema_type: Type[T_Schema]) -> _MigrationsCollector[T_Schema]
     return _MigrationsCollector(schema_type)
 
 
-def migrates(
-        schema_type: Type[T_Schema], src_version: str, dst_version: str
+def migrates[T_Schema: GoldenFileSchema](
+        schema_type: type[T_Schema], src_version: str, dst_version: str
 ) -> Callable[[Migration[T_Schema]], Migration[T_Schema]]:
     """Decorator factory for decorator which registers the decorated function into the singleton instance of
     :class:`MigrationsCollector` with key (``schema_type``, ``src_version``, ``dst_version``).
@@ -80,7 +81,7 @@ def collect() -> None:
     """
     assert any([TOOL_PATH.is_relative_to(sp) for sp in sys.path])
     module_prefix = '.'.join(TOOL_PATH.relative_to(os.environ["PROJECT_ROOT"]).parts[1:])
-    results: List[Path] = []
+    results: list[Path] = []
 
     # Collect paths to relevant files:
     for res in multi_glob("**/migrate_*.py", "**/*_migration.py", "**/*_migrations.py",

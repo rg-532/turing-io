@@ -1,5 +1,13 @@
 # Future Ideas
 
+## Bootstrap with `sitecustomize.py`
+I recently learnt of a way to do automated bootstrap script execution more cleanly with
+`sitecustomize.py` - As long as that exists somewhere in the `PYTHONPATH`, it will always execute
+before any python execution (Probably including tools like `pytest`).
+
+**Note:** If multiple `sitecustomize.py` files exist, only the first one runs.
+
+
 ## `Pydantic` Migration
 This idea is two-fold:
 1. Replace usage of `EmptySchema` with Pydantic implementations.
