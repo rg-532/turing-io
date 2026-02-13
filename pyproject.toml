@@ -1,43 +1,50 @@
-[tool.poetry]
+[project]
 name = "turing-io"
 version = "0.1.0"
 description = "An environment to define and run Turing machines."
-authors = ["Rom Gat <rom.gat532@gmail.com>"]
-license = "MIT"
+authors = [{ name = "Rom Gat", email = "rom.gat532@gmail.com" }]
+requires-python = "==3.12.12"
 readme = "README.md"
-package-mode = false    # Remove this when you want the project to install
-
-keywords = ["turing", "turing machine", "turing-machine", "turing.io", "tm", "simulator", "compiler"]
+license = "MIT"
+keywords = [
+    "turing",
+    "turing machine",
+    "turing-machine",
+    "turing.io",
+    "tm",
+    "simulator",
+    "compiler",
+]
 classifiers = [
     "Development Status :: 1 - Planning",
-
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
-
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-
     "Topic :: Education",
     "Topic :: Software Development :: Compilers",
 ]
+dependencies = [
+    "jsonpickle>=4.1.1,<5",
+    "ply==3.11",
+]
 
-[tool.poetry.urls]
+[project.urls]
 Repository = "https://github.com/rg-532/turing-io"
 
-[tool.poetry.dependencies]
-python = "3.12.12"
-jsonpickle = "^4.1.1"
-ply = "3.11"
-poetry = ">=0.12"
+[dependency-groups]
+dev = [
+    "black>=24.0,<25",
+    "mypy>=1.10,<2",
+    "ruff>=0.6,<0.7",
+    "pytest>=8.0,<9",
+    "tabulate>=0.9,<0.10",
+    "sphinx>=8.2.3,<9",
+    "click>=8.3.0,<9",
+]
 
-[tool.poetry.group.dev.dependencies]
-black = "^24.0"
-mypy = "^1.10"
-ruff = "^0.6"
-pytest = "^8.0"
-tabulate = "^0.9"
-sphinx = "^8.2.3"
-click = "^8.3.0"
+[tool.uv]
+package = false
 
 
 [tool.turing_io.test.schema_versions]
@@ -60,7 +67,7 @@ target-version = ["py312"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
-mypy_path = "src, tests, tools"
+mypy_path = "src, tests, tools, typings"
 
 [[tool.mypy.overrides]]
 module = ["ply.*"]
@@ -76,5 +83,5 @@ implicit_reexport = true
 
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
