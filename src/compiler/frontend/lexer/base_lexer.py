@@ -16,7 +16,6 @@ class BaseLexer[T](ABC):
         :param text:    Input.
         :param reset:   Whether to reset positional parameters on this input (for reuse).
         """
-        ...
 
     @abstractmethod
     def token(self) -> T:
@@ -24,7 +23,6 @@ class BaseLexer[T](ABC):
 
         :return:    Next token.
         """
-        ...
 
     @abstractmethod
     def is_terminal_token(self, tok: T) -> bool:
@@ -34,7 +32,6 @@ class BaseLexer[T](ABC):
         :param tok: Token to test.
         :return:    ``True`` if the token is terminating, ``False`` otherwise.
         """
-        ...
 
     def tokenize(self, text: str, reset: bool = True) -> Generator[T, None, None]:
         """Unifies the ``input()`` and ``token()`` methods into one call that generates and yields the sequence of
@@ -50,4 +47,3 @@ class BaseLexer[T](ABC):
         while not self.is_terminal_token(tok):
             yield tok
             tok = self.token()
-

@@ -70,12 +70,6 @@ strict = true
 mypy_path = "src, tests, tools, typings"
 
 [[tool.mypy.overrides]]
-module = ["ply.*"]
-ignore_missing_imports = true
-check_untyped_defs = false
-implicit_reexport = true
-
-[[tool.mypy.overrides]]
 module = ["jsonpickle.*"]
 ignore_missing_imports = true
 check_untyped_defs = false
