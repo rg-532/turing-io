@@ -1,7 +1,7 @@
 """This modules implements some pipeline adapters for ``PLY`` implementations.
 """
 from copy import copy
-from typing import Optional, Self
+from typing import Any, Optional, Self
 
 from ply import lex
 
@@ -26,19 +26,19 @@ class PLYLexTokenAdapter(ExternalTokenAdapterProto[Optional[lex.LexToken]]):
                  adapted_token: Optional[lex.LexToken],
                  e_lineno: int, e_colno: int,
                  ply_lexer: Optional[lex.Lexer]) -> None:
-        self._adapted = adapted_token
-        self._ply_lexer = ply_lexer
+        self._adapted: Optional[lex.LexToken] = adapted_token
+        self._ply_lexer: Optional[lex.Lexer] = ply_lexer
 
         if ply_lexer:
-            self._lexpos = ply_lexer.lexpos
+            self._lexpos: int = ply_lexer.lexpos
         else:
             self._lexpos = 0
 
         if adapted_token is None:
-            self.type_ = ENDMARKER_TYPE
-            self.value = None
-            self.lineno = e_lineno
-            self.colno = e_colno
+            self.type_: Optional[str] = ENDMARKER_TYPE
+            self.value: Any = None
+            self.lineno: int = e_lineno
+            self.colno: int = e_colno
         else:
             self.type_ = adapted_token.type
             self.value = adapted_token.value
@@ -90,6 +90,8 @@ class PLYLexerAdapter(ExternalLexerAdapter[Optional[lex.LexToken], PLYLexerFacad
 
 
 class PLYLexerReverseAdapter(ExternalLexerReverseAdapter[Optional[lex.LexToken]]):
+    """Reverse adapter implementation for ``PLY`` lexers as classes.
+    """
     def __init__(self, reverse_adapted_lexer: BaseLexer[ExternalTokenAdapterProto[Optional[lex.LexToken]]]) -> None:
         super().__init__(reverse_adapted_lexer)
 

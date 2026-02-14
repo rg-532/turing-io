@@ -9,15 +9,6 @@ from compiler.frontend.lexer.base_lexer import BaseLexer
 from compiler.frontend.lexer.errors import InvalidCharError
 
 
-@dataclass
-class _PLYLexerFacadeState:
-    ply_lexer: lex.Lexer
-
-    # Column tracking + whitespace filtration:
-    new_line: bool
-    line_lexpos: int
-
-
 # noinspection PyPep8Naming
 # pylint: disable=missing-function-docstring disable=invalid-name
 class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
@@ -86,9 +77,9 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
 
     @lex.Token(r"[ \t]+")
     def t_WHITESPACE(self, tok: lex.LexToken) -> Optional[lex.LexToken]:
-        assert self._state is not None, "Lexer state cannot be `None` during tokenization."
+        assert self._lexer_state is not None, "Lexer state cannot be `None` during tokenization."
 
-        if self._state.new_line:
+        if self._lexer_state.new_line:
             return tok
 
         return None
@@ -104,13 +95,21 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
         return tok
 
 
+    @dataclass
+    class _PLYLexerState:
+        ply_lexer: lex.Lexer
+
+        # Column tracking + whitespace filtration:
+        new_line: bool
+        line_lexpos: int
+
     def __init__(self) -> None:
-        self._state: Optional[_PLYLexerFacadeState] = None
+        self._lexer_state: Optional[PLYLexerFacade._PLYLexerState] = None
 
     @property
     def ply_lexer(self) -> Optional[lex.Lexer]:
-        if self._state is not None:
-            return self._state.ply_lexer
+        if self._lexer_state is not None:
+            return self._lexer_state.ply_lexer
 
         return None
 
@@ -119,32 +118,32 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
 
         :param tok: Token to set attribute `tok.colno` for.
         """
-        assert self._state is not None, "Lexer state cannot be `None` when setting colno."
+        assert self._lexer_state is not None, "Lexer state cannot be `None` when setting colno."
 
-        if self._state.new_line:
-            self._state.line_lexpos = tok.lexpos
+        if self._lexer_state.new_line:
+            self._lexer_state.line_lexpos = tok.lexpos
 
-        tok.colno = tok.lexpos - self._state.line_lexpos + 1
+        tok.colno = tok.lexpos - self._lexer_state.line_lexpos + 1
 
     def input(self, text: str, reset: bool = True) -> None:
-        if reset or self._state is None:
+        if reset or self._lexer_state is None:
             ply_lexer = lex.lex(module=self)
-            self._state = _PLYLexerFacadeState(ply_lexer, True, ply_lexer.lexpos)
+            self._lexer_state = PLYLexerFacade._PLYLexerState(ply_lexer, True, ply_lexer.lexpos)
 
-        self._state.new_line = True
-        self._state.line_lexpos = self._state.ply_lexer.lexpos
+        self._lexer_state.new_line = True
+        self._lexer_state.line_lexpos = self._lexer_state.ply_lexer.lexpos
 
-        self._state.ply_lexer.input(text)
+        self._lexer_state.ply_lexer.input(text)
 
     def token(self) -> Optional[lex.LexToken]:
-        if self._state is None:
+        if self._lexer_state is None:
             return None     # Assume empty input
 
-        tok = self._state.ply_lexer.token()
+        tok = self._lexer_state.ply_lexer.token()
 
         if tok is not None:
             self._set_token_colno(tok)
-            self._state.new_line = tok.type == "EOL"
+            self._lexer_state.new_line = tok.type == "EOL"
 
             if tok.type == "_ERR_INVALID_CHAR":
                 raise InvalidCharError.from_params(tok.value, tok.lineno, tok.colno)
@@ -158,13 +157,13 @@ class PLYLexerFacade(BaseLexer[Optional[lex.LexToken]]):
         tok = lex.LexToken()
         tok.type = tok.value = None
 
-        if self._state is None:     # Assume empty input
+        if self._lexer_state is None:     # Assume empty input
             tok.lineno = tok.lexpos = 0
             tok.lexer = None
         else:
-            tok.lineno = self._state.ply_lexer.lineno
-            tok.lexpos = self._state.ply_lexer.lexpos
-            tok.lexer = self._state.ply_lexer
+            tok.lineno = self._lexer_state.ply_lexer.lineno
+            tok.lexpos = self._lexer_state.ply_lexer.lexpos
+            tok.lexer = self._lexer_state.ply_lexer
 
         self._set_token_colno(tok)
 
