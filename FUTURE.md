@@ -1,7 +1,7 @@
 # Future Ideas
 
 ## Bootstrap with `sitecustomize.py`
-I recently learnt of a way to do automated bootstrap script execution more cleanly with
+I recently learned of a way to do automated bootstrap script execution more cleanly with
 `sitecustomize.py` - As long as that exists somewhere in the `PYTHONPATH`, it will always execute
 before any python execution (Probably including tools like `pytest`).
 
@@ -29,7 +29,7 @@ Since this is a future idea, it will incur **version updates** of involved schem
 migrations).
 
 
-## Golden File Management w/ Pytest Flags
+## Golden File Management w/ PyTest Flags
 It is possible to add flags to `pytest` invocation through a terminal. An old suggestion I received
 was to add a flag to remake golden files, which makes sense in a scenario where the golden file
 metadata is outdated.
@@ -59,7 +59,7 @@ A potential structure for **test metadata files**:
 checked out.
 
 
-## Tools Refactory
+## Tools Refactoring
 ### Global changes:
 - `mypy` related repairs.
 - Consider adding testing.
@@ -84,7 +84,7 @@ checked out.
   - `get/execute_file_migration` will operate similarly to before.
 
 This approach removes confusion occurring when both `files` are specified and `scan` appears
-before `migrate`, while exposing all desired APIs. Duplication will be handled through the refactory
+before `migrate`, while exposing all desired APIs. Duplication will be handled through the refactoring
 of `ops`.
 
 

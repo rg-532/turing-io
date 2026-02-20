@@ -7,18 +7,18 @@ Summary of what happened so far:
     than with `flex` and `bison`).
   - To allow for running in "debug" mode (Step-by-step runner), we decided to compile into an
     **Intermediate Representation (IR)** on the compiler *frontend*, which will simply be a classic
-    turing machine definition, then transform that into a **Bytecode** (in the *backend*) which
+    Turing machine definition, then transform that into a **Bytecode** (in the *backend*) which
     would be **interpreted** by a `C++` runtime module.
   - Later on, we can transform the *backend* into one that emits `C/C++` code instead for
     performance and straight execution, or change the **Bytecode** approach into a
     **Resumable C/C++** approach.
-  - There was also some discussion about and *alternative syntax* which defines a turing machine
+  - There was also some discussion about and *alternative syntax* which defines a Turing machine
     by the **classic definition** rather than the modular (Building blocks) approach, and an
     alternative compiler *frontend* for that, as well as an alternative **IR** composed of the
     modular building blocks for efficiency when the machine is not being debugged.
 
 
-- On october 11th and 12th, I defined the moduler language `TMLang`, had to do a bunch of
+- On October 11th and 12th, I defined the modular language `TMLang`, had to do a bunch of
   installations and corrections, and learned about `PLY` for my python compiler.
 
 
@@ -53,7 +53,7 @@ Summary of what happened so far:
 - Learned about how **MRO** and `super()` are defined in python in cases of multiple inheritance.
 
 ### Compiler/Lexer
-- Consider **exposing the Lexer's `indent_char` parameter** so it can be set by calling user.
+- Consider **exposing the Lexer's `indent_char` parameter**, so it can be set by calling user.
 - Realized indentation support is complex - There could also be inconsistencies with indentation
   levels and custom exceptions are needed - Did not finish implementation.
 - Added a bunch of TODOs, most of them for things that need to update when I add column tracking
@@ -76,7 +76,7 @@ Summary of what happened so far:
   - Add doc, `t_error`, and whitespace filtering to the main `TMLexer` class.<break>
     Details can be found in a `TODO` on the class doc.
   - Testing for the Lexer.
-  - Some added refactory. Mainly need to decide if the Facade should be private or not.
+  - Some added refactoring. Mainly need to decide if the Facade should be private or not.
 
 
 ## October 17th, 2025
@@ -142,13 +142,13 @@ Summary of what happened so far:
     or loading can change over time, and it is mostly dependent on what the code that writes
     to or reads from file wants to do.
     
-    In other words, **It is not the wrappers responsibility!** Therefore, I backed away from
+    In other words, **It is not the wrapper's responsibility!** Therefore, I backed away from
     this approach and implemented bare-bones utilities.
     
 
 ## October 20th, 2025
 ### Compiler/Lexer Testing
-Super tired today, so I did not implement anything, however I thought of a couple of problems
+Exhausted today, so I did not implement anything, however I thought of a couple of problems
 related to the design of the testing utilities components:<br>
 
 - There is an issue of determining the *type* of the value of a token when it is loaded from
@@ -180,7 +180,7 @@ related to the design of the testing utilities components:<br>
   potentially by the type and format of the file.<br><br>
 
   - To allow for different object to be processed by the same file management logic, a **Mixin**
-    (or a **Protocol**) interface can be implemented, enforcing any dumpable object to implement
+    (or a **Protocol**) interface can be implemented, enforcing any dump-able object to implement
     read/write methods, and the file management logic can invoke these methods.<br><br>
   
     While this approach seems perfectly valid, the issue of **object referencing** should still
@@ -198,7 +198,7 @@ related to the design of the testing utilities components:<br>
 
 ## October 22nd, 2025
 ### Compiler/Lexer Testing
-Did not implement a lot, but thought about the file-management utility at a larget scope; I want
+Did not implement a lot, but thought about the file-management utility at a larger scope; I want
 this utility to be useful down the road as well, allowing to easily read and write other types
 of data into files, and also allowing a friendly user view for manual reviews.
 
@@ -237,7 +237,7 @@ parametrization, and some utilities:
   - This caused me to define a `pyproject.toml` file which defines dependencies and project
     attributes, which is managed by `Poetry`, and a special file `src/bootstrap.py` which reads
     these attributes into environment variables for the sake of automatically initializing
-    contents of these schema (for example, the project's version is automatically read from
+    contents of these schemas (for example, the project's version is automatically read from
     the project definition into any schema).
   <br><br>
 - Defined a `FileManager` hierarchy - Each subclass defines mechanisms to read/write **different
@@ -264,7 +264,7 @@ I decided to go with the following design, which resembles the `Decorator` or `C
 responsibility` patterns operate (Though not exactly):
 - Defined a base lexer interface which any operational lexer should implement. Added that
   as a base class of the `PLY` lexer implementation.<br><br>
-- Defined a lexer wrapper base class, which wraps a base lexer and alters its behaviour.
+- Defined a lexer wrapper base class, which wraps a base lexer and alters its behavior.
   - This wrapper receives tokens from the wrapped lexer, processes them and generates its
     own output token stream.
     - The wrapper does this by inserting all tokens from processing into some output queue.
@@ -293,8 +293,8 @@ the memory efficient approach of the initial design.
 There were some ways to address this issue:
 - Ensure that there is no `EOL` token before `None` first, and then re-add it, but that introduces
   coupling between wrappers.
-- Make it so the output queue becomes an input queue, but then deciding what needs to be outputted
-  became an issue, as both stream undergo processing, and I wanted that to be able to skip tokens.
+- Let the output queue become an input queue, but then deciding what needs to be outputted
+  became an issue, as both streams undergo processing, and I wanted that to be able to skip tokens.
   - One way to combat this is to make the processing logic return a number of tokens to be output
     from the queue, having the next one undergo processing (This feels clunky).
   - Alternatively, the processing logic can return the next token to output, but that makes managing
@@ -302,8 +302,33 @@ There were some ways to address this issue:
 
 The realization that tokens retrieved for processing sometimes need to undergo additional processing
 (common in lookahead utilization) but sometimes not lead me to utilize a dual-queue approach, which
-also helped remove unnecessary calls to the processing logic, and allows for (future) refactory which
+also helped remove unnecessary calls to the processing logic, and allows for (future) refactoring which
 would reduce the number of calls to process even further (by defining the processed token types).
+    
 
+## February 14th, 2026
+### General
+Oh man...
 
+Overview of what occurred up until recently:
+- Refactored the Lexer implementation.
+- Added more Lexer tests.
+- Refactored code based on `mypy` requirements.
+- Modernized type hints (i.e. replaced `List` with `list`).
+- Updated the Ubuntu VM to 24.04, failed spectacularly (still does not work smoothly)
+- During the first couple of weeks of January - **I FOUND A JOB!**
+- Migrated to VS Code + WSL + UV instead of PyCharm on a VM + Poetry, because:
+  - Ubuntu has become unstable, and was always slow to run entire IDEs (regardless of resources).
+  - WSL is a lighter and faster alternative to "get your Linux in your Windows".
+  - PyCharm Community edition **does not support WSL**, but VS Code does.
+  - UV is a much better independent alternative to Poetry.
+  
+  This lead to a phase of installations, configurations and refactoring to match `PyLint + PyLance`
+  which in essence replace `mypy`'s checks (This is surprising because I thought VS Code will be
+  much less strict in regard to type-safety and code conventions).
 
+Now I may keep refactoring the code for `PyLint + PyLance` or redo some portions of it whose design
+I dislike:
+- For instance, the Lexer implementation is way too complex for what it is, and still has issues.
+- Another example is the tests I built which are too complex and heavy for something as simple as
+  a basic language's lexical analysis.

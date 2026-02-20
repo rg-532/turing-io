@@ -71,7 +71,7 @@ class ExtraAttrsMixin(MutableMapping[str, Any]):
         return repr(self._extra_attrs)
 
 
-@dataclass(repr=False, kw_only=True)
+@dataclass(repr=False, kw_only=True, frozen=True)
 class EmptySchema(ExtraAttrsMixin):
     """This is the base dataclass for all schemas in this project. It inherits from :class:`ExtraAttrsMixin` to allow
     flexibility of the standard ``dataclass`` implementation.

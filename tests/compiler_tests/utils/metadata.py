@@ -5,7 +5,7 @@ The parsing result, obtained by :func:``
 import logging
 import os
 from functools import cache, cached_property
-from typing import Literal
+from typing import Literal, cast
 
 from compiler_tests.utils.files import JsonFileManager, T_JsonContent
 from compiler.utils.globbing import multi_glob
@@ -89,10 +89,12 @@ class _LazyMetadata(object):
         """Sequence of all input paths specified by globbing patterns under "input_patterns" in the metadata file.
         """
         # This is here because of the lack of schema for read metadata files.
-        assert isinstance(self._metadata["input_patterns"], list)
-
+        patterns = cast(list[str], self._metadata["input_patterns"])
+        assert isinstance(patterns, list)
+        assert all(isinstance(pat, str) for pat in patterns)
+        
         paths = multi_glob(
-            *self._metadata["input_patterns"],
+            *patterns,
             root_dir=self.input_dir,
             recursive=True)
         # This is because `globbing.py` implementation is weird.

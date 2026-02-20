@@ -1,0 +1,9 @@
+{
+    "python.analysis.extraPaths": [
+        "src",
+        "tests"
+    ],
+    "pylint.args": [
+        "\"--source-roots=src,tests,tools --known-first-party=src,tests,tools\""
+    ]
+}

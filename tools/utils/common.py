@@ -1,15 +1,11 @@
 """'Bag of crap' style utilities.
 """
 
-from functools import cache, wraps
-from typing import TypeVar, Callable, ParamSpec
-
-_R = TypeVar("_R")
-_P = ParamSpec("_P")
-_P2 = ParamSpec("_P2")
+from functools import cache, wraps, _lru_cache_wrapper
+from typing import Callable
 
 
-def typed_cache(func: Callable[_P, _R]) -> Callable[_P, _R]:
+def typed_cache[**P, R](func: Callable[P, R]) -> _lru_cache_wrapper[R]:
     """Simply adds typing support for ``functools.cache`` so that hints will appear (use as decorator).
 
     :param func:    Function to apply ``functools.cache`` to.
@@ -18,9 +14,11 @@ def typed_cache(func: Callable[_P, _R]) -> Callable[_P, _R]:
     return cache(func)
 
 
-def pre_call_hook(pre_call_func: Callable[_P, ...],
-                  *p_args: _P.args,
-                  **p_kwargs: _P.kwargs) -> Callable[[Callable[[_P2], _R]], Callable[[_P2], _R]]:
+def pre_call_hook[**P, R, **P2](
+    pre_call_func: Callable[P, R],
+    *p_args: P.args,
+    **p_kwargs: P.kwargs
+) -> Callable[[Callable[P2, R]], Callable[P2, R]]:
     """Decorator factory which returns a decorator that calls ``pre_call_func(*p_args,**p_kwargs)`` before
     calling the decorated function.
 
@@ -28,9 +26,9 @@ def pre_call_hook(pre_call_func: Callable[_P, ...],
     :param p_args:          Positional arguments for ``pre_call_func``.
     :return:                Decorator for the function.
     """
-    def decorator(func: Callable[_P2, _R]) -> Callable[_P2, _R]:
+    def decorator(func: Callable[P2, R]) -> Callable[P2, R]:
         @wraps(func)
-        def wrapper(*args: _P2.args, **kwargs: _P2.kwargs):
+        def wrapper(*args: P2.args, **kwargs: P2.kwargs):
             pre_call_func(*p_args, **p_kwargs)
             return func(*args, **kwargs)
 
@@ -38,7 +36,7 @@ def pre_call_hook(pre_call_func: Callable[_P, ...],
     return decorator
 
 
-def get_func_desc(func: Callable[[...], ...]) -> str:
+def get_func_desc(func: Callable) -> str:
     """Utility for generating a short description a python function ``func``.
 
     If some attributes of ``func`` cannot be found, they are replaced with a fixed string value. For example, a

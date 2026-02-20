@@ -7,7 +7,7 @@ from typing import ClassVar, Optional, Any
 from dataclasses import dataclass
 import copy
 
-from ply.lex import LexToken as PLYToken
+from ply import lex
 
 from compiler.frontend.lexer.ply_impl.ply_lexer import PLYLexerFacade
 from compiler.utils.string import SafeMapping, normal_str_to_raw
@@ -33,13 +33,13 @@ class LexerToken(object):
 
     typ: Optional[str]
     value: Any
-    lineno: Optional[int]
-    colno: Optional[int]
+    lineno: int
+    colno: int
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, LexerToken):
             other_tok: LexerToken = other
-        elif isinstance(other, PLYToken):
+        elif isinstance(other, lex.LexToken):
             other_tok = LexerToken.from_tok(other)
         else:
             return NotImplemented
@@ -75,7 +75,7 @@ class LexerToken(object):
 
 
     @staticmethod
-    def from_tok(tok: PLYToken | LexerToken) -> LexerToken:
+    def from_tok(tok: Optional[lex.LexToken] | LexerToken) -> LexerToken:
         """Static method to initialize a ``LexerToken`` from a ``ply.lex.LexToken`` instance or another ``LexerToken``
         instance.
 
@@ -91,10 +91,13 @@ class LexerToken(object):
         :param tok: Token to initialize a ``LexerToken`` instance from.
         :return:    A new ``LexerToken`` instance.
         """
+        if tok is None:
+            raise ValueError("LexerToken cannot be instantiated from `None`")
+        
         if isinstance(tok, LexerToken):
             return copy.deepcopy(tok)
 
-        type_: str = tok.type
+        type_: Optional[str] = tok.type
 
         value = getattr(tok, "value", None)
 
@@ -107,7 +110,11 @@ class LexerToken(object):
         return LexerToken(type_, value, lineno, colno)
 
     @staticmethod
-    def is_equiv(tok1: PLYToken | LexerToken, tok2: PLYToken | LexerToken, compare_pos: bool = True) -> bool:
+    def is_equiv(
+        tok1: Optional[lex.LexToken] | LexerToken,
+        tok2: Optional[lex.LexToken] | LexerToken,
+        compare_pos: bool = True
+    ) -> bool:
         """Static method to check equivalency between ``tok1`` and ``tok2``.
 
         Note that the additional parameter ``compare_pos`` allows this comparison method to ignore positional
@@ -118,14 +125,17 @@ class LexerToken(object):
         :param compare_pos: Boolean flag specifying whether to also compare attributes.
         :return:            True if the objects are equivalent, and False otherwise.
         """
-        if isinstance(tok1, PLYToken):
+        if tok1 is None or tok2 is None:
+            return tok1 is None and tok2 is None
+        
+        if isinstance(tok1, lex.LexToken):
             tok1 = LexerToken.from_tok(tok1)
 
         if not compare_pos:
             tok2 = LexerToken.from_tok(tok2)
             tok2.lineno = tok1.lineno
             tok2.colno = tok1.colno
-        elif isinstance(tok2, PLYToken):
+        elif isinstance(tok2, lex.LexToken):
             tok2 = LexerToken.from_tok(tok2)
 
         return tok1 == tok2

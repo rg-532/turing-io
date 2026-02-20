@@ -1,0 +1,13 @@
+Bytecode
+lookahead
+ChatGPT
+Mixin
+subprocess
+mixin
+PyCharm
+PyLint
+PyLance
+Pydantic
+PyTest
+globbing
+pytest

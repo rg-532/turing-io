@@ -5,7 +5,7 @@ from typing import Optional
 from compiler_tests.utils.files.schemas.base_schema import EmptySchema
 
 
-@dataclass(repr=False, kw_only=True)
+@dataclass(repr=False, kw_only=True, frozen=True)
 class GoldenFileOriginSchema(EmptySchema):
     """Schema which captures details about the origin of generation of a JSON file.
     Used by :class:`GoldenFileSchema`.
@@ -19,7 +19,7 @@ class GoldenFileOriginSchema(EmptySchema):
     timestamp: str = os.environ.get("EXEC_TIME", "0000-00-00 00:00:00.00000")
 
 
-@dataclass(repr=False, kw_only=True)
+@dataclass(repr=False, kw_only=True, frozen=True)
 class GoldenFileSchema(EmptySchema):
     """Most basic schema for JSON files which are generated automatically.
 

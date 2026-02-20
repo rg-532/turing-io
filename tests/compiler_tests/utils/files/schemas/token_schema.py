@@ -8,7 +8,7 @@ from compiler_tests.utils.files.schemas.base_schema import EmptySchema
 from compiler_tests.utils.objects.tokens import LexerToken
 
 
-@dataclass(repr=False, kw_only=True)
+@dataclass(repr=False, kw_only=True, frozen=True)
 class TokenFileDataSchema(EmptySchema):
     """Schema which captures the data of a tokens file.
     Used by :class:`TokenFileSchema`.
@@ -20,7 +20,7 @@ class TokenFileDataSchema(EmptySchema):
     exit_exc: Optional[LexerInputError] = None
 
 
-@dataclass(repr=False, kw_only=True)
+@dataclass(repr=False, kw_only=True, frozen=True)
 class TokenFileSchema(GoldenFileSchema):
     """Extends the basic schema to define automatically-generated files containing Lexer outputs (Tokens).
 

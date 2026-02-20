@@ -40,7 +40,7 @@ def set_environment_variables() -> Mapping[str, str]:
     to_add.setdefault("GOLDEN_FILE_SCHEMA_VERSION", meta.get("base", "0"))
     to_add.setdefault("TOKEN_FILE_SCHEMA_VERSION", meta.get("token", "0"))
 
-    for key in to_add.keys():
+    for key in to_add:
         assert key not in os.environ, f"Overriding `os.environ` key '{key}'!"
 
     os.environ.update(to_add)
@@ -48,7 +48,7 @@ def set_environment_variables() -> Mapping[str, str]:
 
 @cache
 def configure_logging() -> None:
-    pass
+    """Pass"""
 
 
 if __name__ == "__main__":

@@ -1,0 +1,3 @@
+{"rule":"TO_DO_HYPHEN","sentence":"^\\QAdded a bunch of TODOs, most of them for things that need to update when I add column tracking for tokens.\\E$"}
+{"rule":"EN_UNPAIRED_BRACKETS","sentence":"^\\QI did other stuff (Was here for 8 hrs) but I don't remember :') .\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QI did other stuff (Was here for 8 hrs) but I don't remember :') .\\E$"}
