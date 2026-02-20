@@ -47,7 +47,7 @@ class GoldenFileManager[T_Schema: GoldenFileSchema](FileManager[T_Schema]):
         raise ClassNotFoundError(f"Could not find class {class_name}")
 
     def _read_core(self, fullpath: Path, **kwargs: Any) -> T_Schema:
-        defaults = dict(on_missing=self._raise_class_not_found_error)
+        defaults: dict[str, Any] = dict(on_missing=self._raise_class_not_found_error)
         defaults.update(kwargs)
 
         schema: T_Schema = jsonpickle.decode(fullpath.read_text(), **defaults)
